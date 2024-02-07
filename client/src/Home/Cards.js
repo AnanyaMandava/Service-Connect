@@ -5,6 +5,7 @@ import CardCover from '@mui/joy/CardCover';
 import CardContent from '@mui/joy/CardContent';
 import Typography from '@mui/joy/Typography';
 import axios from 'axios';
+import img from '../Assets/service-connect.webp'
 
 export default function Cards() {
   const [overview,setOverview]=React.useState();
@@ -20,7 +21,7 @@ React.useEffect(()=>{
       if(x.status=="active"){
         active=active+1;
       }
-    })
+    })  
     setOverview({total:total,active:active});
   })
 },[])
@@ -33,10 +34,10 @@ React.useEffect(()=>{
       <Card component="li" sx={{ minWidth: 300, flexGrow: 1 }}>
         <CardCover>
           <img
-            src="http://dslv9ilpbe7p1.cloudfront.net/gnoSzE3ZY8U7Kt8TMd1aLg_store_banner_image.jpeg"
-            srcSet="http://dslv9ilpbe7p1.cloudfront.net/gnoSzE3ZY8U7Kt8TMd1aLg_store_banner_image.jpeg"
-            loading="lazy"
-            alt=""
+             src={img}
+             srcSet={img}
+             loading="lazy"
+             alt="Service Connect"
           />
         </CardCover>
         <CardContent>
