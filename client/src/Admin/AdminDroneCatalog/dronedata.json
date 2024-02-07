@@ -1,0 +1,23 @@
+{
+    "DJI Phantom 4 Pro":{
+        "Type":"Survellance",
+        "Stabilization":"3-Axis Gimbal",
+        "Flight Time":"30 Minutes",
+        "Flight Speed":{"S-mode":"45 mph",
+                        "A-mode":"36 mph",
+                        "P-mode":"31 mph"},
+        "Weight":"1388",
+        "Max Service Ceiling":"19685 feet(6000 m)",
+        "Max Wind Resistance":"10m/s",
+        "Sensor":"1-inch CMOS",
+        "Lens":"FOV 84° 8.8 mm/24 mm",
+        "Operating Range":"100-3200",
+        "Shutter Speed":"8-1/2000s",
+        "Image Resolution":"4K 4096×2160",
+        "Video Resolution":"4k 4096×2160",
+        "Recording Rate":"30 fps",
+        "Sensory Range":"0-10m",
+        "FOV":"60°(Horizontal), ±27°(Vertical)",
+        "Measuring Frequency":"10 HZ"
+    }
+}

@@ -1,0 +1,23 @@
+.main{
+    margin-top: 10%;
+    text-align: left;
+    margin-left: 2%;
+    background-color: white;
+}
+.main p{
+    margin-top: 2%;
+    font-size: large;
+}
+
+.dropdown{
+    padding-top: 1%;
+    background-color: white;
+    width: 55%;
+}
+
+.selectItem{
+    margin-left: 1%;
+    background-color: rgb(43, 79, 223);
+    color: aliceblue;
+    width: fit-content;
+}

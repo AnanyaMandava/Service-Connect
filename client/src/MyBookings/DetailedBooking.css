@@ -1,0 +1,67 @@
+.headingDetails{
+    display: flex;
+    
+}
+
+.headingDetails h3{
+    float: left;
+    
+}
+
+.h3Heading{
+    float: left;
+}
+
+.billTable{
+    height:500px;
+    padding: 20px;
+    margin-top: 30px;
+    
+    
+    
+}
+
+.columnBill{
+    display: flex;
+    float: left;
+}
+
+.billtableRow{
+    padding: 10px;
+}
+
+.columnBillsub{
+    color:#414141;
+    font-size: 13px;
+}
+
+.columnBillBold{
+    color:#414141;
+    font-weight: 600;
+}
+
+.buttonRow{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.buttonPayment{
+    width: 285.95px;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* float: right; */
+    padding: 20px 10px;
+    background-color: #1A3447;
+    color: white;
+    height: 68px;
+    font-weight: 500;
+font-size: 18px;
+line-height: 22px;
+}
+
+.BackButton{
+    display: flex;
+    padding: 10px;
+    border: 1px solid aliceblue;
+}

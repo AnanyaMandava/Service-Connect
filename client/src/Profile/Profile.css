@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+.profile{
+    padding-top: 30px;
+    color: black;
+}
+
+.profile-column{
+    background-color: white;
+    margin-left: 20px;
+    height: 600px;
+    border-radius: 10px;
+}
+
+.profile-heading{
+    padding-top: 30px;
+    text-align: left;
+}
+
+.image{
+    padding-top: 20px;
+}
+
+.details{
+    padding-top:20px;
+    display: inline;
+    justify-content: space-evenly;
+}
+
+.details1{
+    padding-top:20px;
+    display: inline;
+    justify-content: space-evenly;
+}
+
+.text-styles{
+    /* font-size: 25px; */
+}
+
+.para{
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    color: #434343;
+    font-weight: 400;
+    text-align: left;
+}
+
+.detailsListing{
+    padding-top: 30px;
+}
+
+.farmProfile{
+    display: flex;
+    justify-content: center;
+    margin-top: 25%;
+}
+
+.farmProfileButton{
+    padding: 17px;
+    width: 70%;
+    background-color: #1A3447;
+    color: white;
+    border-radius: 5px;
+}
+
+.farmProfilePage{
+    margin-left:20px
+}
+
+.row-farmProfile{
+    width: 90%;
+    margin-top: 100px;
+    border: px solid black;
+    padding: 25px;
+    margin-left: 40px;
+    /* height: 400px; */
+    background: white;
+    border-radius: 10px;
+}
+
+.innerrow{
+    padding: 10px;
+}
+
+.farmProfileButton-Save{
+    padding: 17px;
+    width: 50%;
+    background-color: #1A3447;
+    color: white;
+    border-radius: 5px;
+}
+
+.farmProfileButton-Farmland{
+    padding: 17px;
+    width: 60%;
+    background-color: #1A3447;
+    color: white;
+    border-radius: 5px;
+    margin-top: 35%;
+}

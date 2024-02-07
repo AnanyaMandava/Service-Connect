@@ -1,0 +1,14 @@
+/* .farmlandimages {
+  width: 10px !important;
+  height: 150px !important;
+} */
+
+ImageListItem img {
+  width: 1500px;
+  height: 150px;
+}
+
+.css-l086p4-MuiImageListItem-root .MuiImageListItem-img {
+  width: 450px !important;
+  height: 300px !important;
+}

@@ -1,0 +1,60 @@
+.bookDrone{
+    margin-top: 10px;
+    color:#1A3447 !important;
+    overflow-x: scroll;
+    height: 100vh;
+    overflow: scroll;
+
+}
+
+.welcomeHeading h3{
+    color:#1A3447 !important;
+    padding: 10px;
+}
+
+.welcomeHeading{
+    padding: 20px;
+    justify-self: start;
+}
+
+.welcomeHeadingRow{
+    margin-left: 10px;
+    background-color: white;
+    /* height: 20%; */
+}
+
+.bookDroneTable{
+    /* background-color: white; */
+    /* height: 100%; */
+    /* padding: 10px; */
+    margin-top: 10px;
+    margin-left: 10px
+}
+.searchCol{
+    display: flex;
+}
+
+.searchRow{
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 17px;
+}
+
+.allBookings{
+    float: left;
+}
+
+.searchCol input[type=text]{
+    padding-left: 20px;
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 5px 10px 20px 0 rgb(8 45 61 / 17%);
+    background-image: url('./../Assets/icons8-search.svg');
+    background-position: 10px 5px; 
+    background-repeat: no-repeat;
+    background-size: 20px;
+    padding-left:40px;
+   
+}

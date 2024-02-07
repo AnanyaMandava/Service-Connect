@@ -1,0 +1,25 @@
+.row {
+  border: 1px solid gray;
+  border-radius: 5px;
+  width: 340px;
+}
+
+.SearchButton {
+  margin-left: "20px";
+  border-radius: "7px";
+  color: "white";
+  width: "100px";
+  padding: "5px";
+  display: "inline-block";
+  background-color: "#0096FF";
+  /* alignItems: "center", */
+}
+
+.datepickerclass {
+  width: 10px;
+  color: black;
+}
+
+.dateclass {
+  color: black;
+}

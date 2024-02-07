@@ -1,0 +1,17 @@
+.Layout{
+    background-color: #E5E5E5;
+}
+
+.layoutContainer{
+    display: flex;
+    margin-left: -10px;
+}
+.Main{
+    margin-top: 100px;
+    width:90%
+}
+
+.Main-Pilot{
+    margin-top: 100px;
+    width: 100%;
+}

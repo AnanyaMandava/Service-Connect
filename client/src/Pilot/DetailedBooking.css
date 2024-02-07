@@ -1,0 +1,96 @@
+.headingDetails{
+    display: flex;
+    
+}
+
+.headingDetails h3{
+    float: left;
+    
+}
+
+.h3Heading{
+    float: left;
+}
+
+.billTable{
+    height:500px;
+    padding: 20px;
+    margin-top: 30px;
+    text-align: left;
+    font-size: 18px;
+    
+    
+    
+}
+
+.columnBill{
+    display: flex;
+    float: left;
+}
+
+.billtableRow{
+    padding: 10px;
+}
+
+.columnBillsub{
+    color:#414141;
+    font-size: 13px;
+}
+
+.columnBillBold{
+    color:#414141;
+    font-weight: 600;
+}
+
+.buttonRow{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.noButtonPayment{
+    width: 250px;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* float: right; */
+    padding: 10px 10px;
+    background-color: #3d3e3f;
+    color: rgb(6, 6, 6);
+    height: 40px;
+    font-weight: 300;
+font-size: 14px;
+line-height: 22px;
+border-radius: 10px;
+cursor: not-allowed;
+}
+
+.buttonPayment{
+    width: 250px;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* float: right; */
+    padding: 10px 10px;
+    background-color: #1A3447;
+    color: white;
+    height: 40px;
+    font-weight: 300;
+font-size: 14px;
+line-height: 22px;
+border-radius: 10px;
+}
+
+.BackButton{
+    display: flex;
+    padding: 10px;
+    border: 1px solid aliceblue;
+}
+
+#scaled-frame {
+    zoom: 0.75;
+    -moz-transform: scale(0.75);
+    -moz-transform-origin: 0 0;
+    -o-transform: scale(0.75);
+    -o-transform-origin: 0 0;
+    -webkit-transform: scale(0.75);
+    -webkit-transform-origin: 0 0;
+  }

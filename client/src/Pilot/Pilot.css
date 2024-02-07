@@ -1,0 +1,8 @@
+.button{
+    margin-top:40px;
+    width: 250px;
+    height:40px;
+    /* margin-left: -40%; */
+    background-color: #1A3447;
+    color: white;
+}
