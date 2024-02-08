@@ -14,7 +14,7 @@ export default function Schedule() {
     
 
     return <div className='row' style={{backgroundColor:"white"}}>
-        <button onClick={()=>{navigate('/pilot') }}>Back to dashboard</button>
+        <button onClick={()=>{navigate('/sp') }}>Back to dashboard</button>
     <div className='col-sm-10' style={{width:"700px"}}><Scheduler  events={EVENTS} /></div>
     <div className='col-sm-2'></div>
     <div className='col-sm' style={{width:"700px"}}>

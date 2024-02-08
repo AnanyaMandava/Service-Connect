@@ -7,7 +7,7 @@ function FarmProfile() {
   useEffect((props) => {
     const auth = JSON.parse(localStorage.getItem("auth"));
       // createData("customer1@gmail.com", "+1 619 234 1235", "San Jose, CA", "Visa ending in 1246", "Not Set ","password") 
-      axios.get('http://localhost:8080/api/auth/getUserDetails/'+auth.loginjson[0].userName+'?role=farmer').then((res)=>{
+      axios.get('http://localhost:8080/api/auth/getUserDetails/'+auth.loginjson[0].userName+'?role=customer').then((res)=>{
         setResponse(res.data)
         console.log(response)
       })

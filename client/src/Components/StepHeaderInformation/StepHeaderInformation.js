@@ -6,20 +6,20 @@ import Typography from '@mui/material/Typography';
 const StepHeaderInformation = (props) => {
     const msg = [
         {
-            head: 'Farmland selection',
-            desc: 'Please select the farmland you would like your drone service on.'
+            head: 'Service selection',
+            desc: 'Please select a service you would like to book your appointment from.'
         },
         {
-            head: 'Drone Catalog',
-            desc: 'Select a service and choose your drone'
+            head: 'Service Type Catalog',
+            desc: 'Select a service Type and choose your provider'
         },
         {
-            head: 'Selected Drone',
-            desc: 'This is your selected drone'
+            head: 'Selected Service',
+            desc: 'This is your selected Service'
         },
         {
             head: 'Confirm Booking',
-            desc: 'Please confirm your selected service details your estimated cost is below.'
+            desc: 'Please confirm your selected service details, your estimated cost is below.'
         },
         {
             head: 'Your booking is confirmed',

@@ -69,7 +69,7 @@ const StepCoreContent = (props) => {
       {selectedFarmLand && (
         <Typography sx={{ mt: 1 }}>
           {" "}
-          Selected FarmLand: {selectedFarmLand.title}{" "}
+          Selected Service: {selectedFarmLand.title}{" "}
         </Typography>
       )}
     </Box>

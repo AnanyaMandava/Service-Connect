@@ -45,14 +45,14 @@ function App() {
   }, []);
 
   const navigateToRole=(role)=>{
-    if(role=="pilot"){
+    if(role=="sp"){
       setLogin(true)
-      setRole("pilot")
+      setRole("sp")
       navigate("/pilot");
     }
-    else if( role=="farmer"){
+    else if( role=="customer"){
       setLogin(true)
-      setRole("farmer")
+      setRole("customer")
       navigate("/");
     }
     else if( role=="admin"){
@@ -65,7 +65,7 @@ function App() {
   const changeLoginStatus=(bool,role,email)=>{
     setLogin(bool)
     //need to be changed based on the provided parameter
-    if(bool && role=="pilot")
+    if(bool && role=="sp")
     {
 
       var loginjson = {
@@ -75,11 +75,11 @@ function App() {
       };
       loginDetails.loginjson.push(loginjson);
       localStorage.setItem("auth", JSON.stringify(loginDetails));
-      setRole("pilot")
+      setRole("sp")
       navigate("/pilot");
     }
-    else if(bool && role=="farmer"){
-      console.log("inside app js role farmer")
+    else if(bool && role=="customer"){
+      console.log("inside app js role customer")
       var loginjson = {
         userName: email,
         userRole: role,
@@ -87,7 +87,7 @@ function App() {
       };
       loginDetails.loginjson.push(loginjson);
       localStorage.setItem("auth", JSON.stringify(loginDetails));
-      setRole("farmer")
+      setRole("customer")
       navigate("/")
     }
     else if(bool && role=="admin"){

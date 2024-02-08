@@ -147,13 +147,13 @@ function DetailedBooking(props) {
             </div>
             <div className="col-sm-4" style={{ float: "left" }}>
               <div className="row" style={{ fontWeight: "600", color: "grey" }}>
-                Drone Pilot{" "}
+                Drone SP{" "}
               </div>
               <div className="row" style={{ fontWeight: "600", color: "grey" }}>
-                {props.row.pilotName}
+                {props.row.spName}
               </div>
               <div className="row" style={{ fontWeight: "600", color: "grey" }}>
-                {props.row.pilotLicense}
+                {props.row.spLicense}
               </div>
               <div className="row" style={{ fontWeight: "300", color: "grey" }}>
                 360 South Market Street{" "}
@@ -176,7 +176,7 @@ function DetailedBooking(props) {
                 </button>
               </div>
               <div className="row buttonRow">
-                <button className="buttonPayment" onClick={()=>navigate('/Pilot')} >
+                <button className="buttonPayment" onClick={()=>navigate('/SP')} >
                   Back to dashboard
                 </button>
               </div>
@@ -340,11 +340,11 @@ function DetailedBooking(props) {
 
       {/* Equipment */}
 
-      {/* Pilot Charge */}
+      {/* SP Charge */}
 
       {/* <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Pilot Charge
+                SP Charge
               </div>
             </div>
 
@@ -356,7 +356,7 @@ function DetailedBooking(props) {
               <img src={require("./../Assets/Line.svg").default} />
             </div> */}
 
-      {/* Pilot Charge */}
+      {/* SP Charge */}
       {/* </div>
         </div> */}
 

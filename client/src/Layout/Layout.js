@@ -8,9 +8,9 @@ function Layout(props) {
     return <>
     <Navbar role={props.role}  changeLoginStatus={props.changeLoginStatus}/>
     <div className='container-fluid layoutContainer'>
-    {props.role!="pilot" && <Sidebar role={props.role} changeLoginStatus={props.changeLoginStatus}/>}
+    {props.role!="sp" && <Sidebar role={props.role} changeLoginStatus={props.changeLoginStatus}/>}
 
-    <div className={props.role=="pilot"?'Main-Pilot':'Main'}>
+    <div className={props.role=="sp"?'Main-SP':'Main'}>
 
     <Outlet />
     </div>

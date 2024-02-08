@@ -138,14 +138,14 @@ function StartService(props) {
 
 
       <div className="row">
-       { role=="pilot" && <div className="col-sm-2">
+       { role=="sp" && <div className="col-sm-2">
         <div className="row buttonRow">
                 <button className="buttonPayment" style={{height:"100px"}} onClick={()=>markCompleted()}>
                   Mark as completed
                 </button>
               </div>
               <div className="row buttonRow">
-                <button className="buttonPayment" style={{height:"100px"}}  onClick={() => navigate('/Pilot')}>
+                <button className="buttonPayment" style={{height:"100px"}}  onClick={() => navigate('/SP')}>
                   Back to dashboard
                 </button>
               </div>

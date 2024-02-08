@@ -97,7 +97,7 @@ const Step4 = (props) => {
               <tr>
                 <td>
                   <img
-                    src={require("../../Assets/mypilot.png")}
+                    src={require("../../Assets/mysp.png")}
                     style={{
                       border: "1px solid grey",
                       borderRadius: "5px",
@@ -110,7 +110,7 @@ const Step4 = (props) => {
                 </td>
                 <tr>
                   <td style={{ marginRight: "200px" }}>
-                    <Typography align="left"> Drone Pilot</Typography>
+                    <Typography align="left"> Drone SP</Typography>
                     <p
                       style={{
                         position: "left",

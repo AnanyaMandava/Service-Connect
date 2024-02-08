@@ -12,8 +12,8 @@ import axios from "axios";
 
 
 function DetailedServiceReport(props) {
-  const [farmerSign, setfarmerSign] = useState(false);
-  const [pilotSign, setPilotSign] = useState(false);
+  const [customerSign, setcustomerSign] = useState(false);
+  const [spSign, setSPSign] = useState(false);
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -59,18 +59,18 @@ function DetailedServiceReport(props) {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Pilot for the service
+            SP for the service
           </Typography>
           <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Pilot details
+                SP details
               </div>
             </div>
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillsub">
-                Pilot Id
+                SP Id
               </div>
-              <div className="col-sm-4 columnBillsub">{currBookingDetails && currBookingDetails.pilotLicense}</div>
+              <div className="col-sm-4 columnBillsub">{currBookingDetails && currBookingDetails.spLicense}</div>
               {/* <img src={require("./../Assets/Line.svg").default}  style={{paddingTop:"5px"}}/> */}
             </div>
             <div className="row billtableRow">
@@ -133,12 +133,12 @@ function DetailedServiceReport(props) {
           </div>
           <div className="col-sm"> 
             <div className="row SignatureRow">
-              <div className="col-sm-8"><h5 className="SignatureHead">Farmer Signature</h5></div>
-              <div className="col-sm-4"><button className="SignatureText SignatureButton" onClick={()=>{setfarmerSign(true)}}>Sign</button></div>
-              <h6 className="SignatureText">{farmerSign ==true ? "Signed" :"Not Signed"}</h6>
+              <div className="col-sm-8"><h5 className="SignatureHead">Customer Signature</h5></div>
+              <div className="col-sm-4"><button className="SignatureText SignatureButton" onClick={()=>{setcustomerSign(true)}}>Sign</button></div>
+              <h6 className="SignatureText">{customerSign ==true ? "Signed" :"Not Signed"}</h6>
             </div>
             <div className="row SignatureRow">
-              <div className="col-sm-8"><h5 className="SignatureHead">Pilot Signature</h5></div>
+              <div className="col-sm-8"><h5 className="SignatureHead">SP Signature</h5></div>
               {/* <div className="col-sm-4"><button className="SignatureText SignatureButton" onClick={()=>{}}>Sign</button></div> */}
               <h6 className="SignatureText">Signed</h6>
             </div>
@@ -150,15 +150,15 @@ function DetailedServiceReport(props) {
         </div>
         <div className="row imageRow">
             <div className="col-sm"><TitlebarImageList time={currBookingDetails && currBookingDetails.fromDate}/></div>
-            <div className="col-sm pilot-div">
+            <div className="col-sm sp-div">
                 <div className="row">
-                    <h3>Pilot details</h3>
+                    <h3>SP details</h3>
                 </div>
                 <div className="row">
-                    <h6>Pilot Name : {currBookingDetails && currBookingDetails.pilotName}</h6>
+                    <h6>SP Name : {currBookingDetails && currBookingDetails.spName}</h6>
                 </div>
                 <div className="row">
-                    <h6>Pilot ID :{currBookingDetails && currBookingDetails.pilotLicense}</h6>
+                    <h6>SP ID :{currBookingDetails && currBookingDetails.spLicense}</h6>
                 </div>
                 <div className="row">
                     <h6>Contact : {currBookingDetails && currBookingDetails.phoneNumber}</h6>

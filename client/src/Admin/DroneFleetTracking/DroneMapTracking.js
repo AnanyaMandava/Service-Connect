@@ -89,7 +89,7 @@ function DroneFleetData() {
                 <Typography textAlign='start'>Service Type: {data[11]}</Typography>
                 <Typography textAlign='start'>Farm: {data[12]}</Typography>
                 <Typography textAlign='start'>Land: {data[13]}</Typography>
-                <Typography textAlign='start'>Farmer: {data[14]}</Typography>
+                <Typography textAlign='start'>Customer: {data[14]}</Typography>
                 <Typography textAlign='start'>Service Time: {data[15]}</Typography>
                 <Typography textAlign='start'>Mission Plan ID #{data[16]}</Typography>
                 <Typography textAlign='start'>Flight ID #{data[17]}</Typography>

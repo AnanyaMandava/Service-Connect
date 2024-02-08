@@ -26,7 +26,7 @@ function Sidebar(props) {
                 </span>
                 <span className={tab=="bookdrone"?'span-li span-li-colored':'span-li '} id="bookdrone" onClick={()=>{changeColor("bookdrone")}}>
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />
-                    <span className='li-span'><Link class="nav-link" to="/bookdrone">Book Drone Service</Link></span>
+                    <span className='li-span'><Link class="nav-link" to="/bookdrone">Book a Service</Link></span>
 
                 </li>
                 <img src={require('./../Assets/arrow.svg').default} alt='mySvgImage' />

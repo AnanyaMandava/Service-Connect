@@ -7,7 +7,7 @@ import axios from 'axios';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-function PilotBookings() {
+function SPBookings() {
   const navigate = useNavigate();
 
     function createData(id, plot, type, service, time,status) {
@@ -21,7 +21,7 @@ function PilotBookings() {
         const params = new URLSearchParams(search);
         const status = params.get('Status');
         const auth = JSON.parse(localStorage.getItem("auth"));
-        const url='http://localhost:8080/agriDrone/getAllPilotBookings/'+auth.loginjson[0].userName
+        const url='http://localhost:8080/agriDrone/getAllSPBookings/'+auth.loginjson[0].userName
         axios.get(url).then((res)=>{
           const data=res.data.filter(x=>{if(x.status=="active") return x;})
           const inactiveData=res.data.filter(x=>{if(!(x.status=="active")) return x;})
@@ -92,4 +92,4 @@ function PilotBookings() {
     </div></>;
 }
 
-export default PilotBookings;
+export default SPBookings;

@@ -32,12 +32,12 @@ function Login(props) {
   const [data, setData] = useState();
   const roles = [
     {
-      value: "Farmer",
-      label: "Farmer",
+      value: "Customer",
+      label: "Customer",
     },
     {
-      value: "Pilot",
-      label: "Pilot",
+      value: "SP",
+      label: "SP",
     },
   ];
   const [signup, setSignUp] = useState(false);
@@ -46,11 +46,11 @@ function Login(props) {
   const sendSignUpToDb = (dataR) => {
     // signup data to be sent to the dataabse
     // axios.post("http://localhost:8080/api/auth/signup",{
-    //   username: "pilot3",
-    //   email: "pilot3@gmail.com",
+    //   username: "sp3",
+    //   email: "sp3@gmail.com",
     //   password: "12345678",
     //   phone_number: 98765432,
-    //   role : "farmer",
+    //   role : "customer",
     //   gender : "male",
     //   date_of_birth : "1998-12-20",
     //   address: "Fountain Plaza",
@@ -69,7 +69,7 @@ function Login(props) {
     console.log("save to db for signup");
     console.log(data);
     console.log(dataR);
-    if (data.role == "Farmer") {
+    if (data.role == "Customer") {
       axios.post("http://localhost:8080/api/auth/signup", {
         username: dataR.Name,
         email: data.email,
@@ -89,8 +89,8 @@ function Login(props) {
         state: "California",
         zipcode: dataR.ZipCode,
       });
-    } else if (data.role == "Pilot") {
-      console.log("inside pilot");
+    } else if (data.role == "SP") {
+      console.log("inside sp");
       axios.post("http://localhost:8080/api/auth/signup", {
         username: dataR.Name,
         email: data.email,
@@ -100,7 +100,7 @@ function Login(props) {
         gender: data.gender,
         date_of_birth: data.dob,
         address: dataR.Address,
-        pilot_license: dataR.DriversLicense,
+        sp_license: dataR.DriversLicense,
         farm_utility: "none",
         payment_method: "card",
         payment_details: "000",
@@ -150,40 +150,40 @@ function Login(props) {
       setMessage("Invalid Credentials - or no details entered");
       handleClickSnack();
     } else {
-      // if (currentUserRole == "Pilot") {
+      // if (currentUserRole == "SP") {
        
-      //   axios.post('http://localhost:8080/api/auth/pilotSignIn',{
+      //   axios.post('http://localhost:8080/api/auth/spSignIn',{
       //     email:email,
       //     password:password,
       //   }).then((res)=>{
-      //     role = "pilot";
+      //     role = "sp";
       //     props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
       //   }).catch((e)=>{
-      //     console.log("inside pilot error");
+      //     console.log("inside sp error");
       //     role=null;
       //     setSeverity("error");
-      //     setMessage("Invalid pilot login credentials ");
+      //     setMessage("Invalid sp login credentials ");
       //     handleClickSnack();
       //   })
-      if (currentUserRole == "Pilot") {role = "pilot";props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);}
+      if (currentUserRole == "SP") {role = "sp";props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);}
       
-      // else if (currentUserRole == "Farmer") {
-      //   axios.post('http://localhost:8080/api/auth/farmerSignIn',{
+      // else if (currentUserRole == "Customer") {
+      //   axios.post('http://localhost:8080/api/auth/customerSignIn',{
       //     email:email,
       //     password:password,
       //   }).then((res)=>{
-      //     role = "farmer";
+      //     role = "customer";
       //     props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
       //   }).catch((e)=>{
-      //     console.log("inside farmer null");
+      //     console.log("inside customer null");
       //     role=null;
       //     setSeverity("error");
-      //     setMessage("Invalid farmer login credentials ");
+      //     setMessage("Invalid customer login credentials ");
       //     handleClickSnack();
       //   })
       // }
-      else if (currentUserRole == "Farmer"){
-          role = "farmer";
+      else if (currentUserRole == "Customer"){
+          role = "customer";
           props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
          }
       else if (email == "admin") {role = "admin"; props.changeLoginStatus(true, currentUserRole.toLowerCase());};
@@ -213,7 +213,7 @@ function Login(props) {
               <div className="col-sm-6 image-width">
                 <img
                   className="login"
-                  src={require("./../Assets/Login.svg").default}
+                  src={require("./../Assets/login-serviceconnect.webp")}
                   alt="mySvgImage"
                 />
               </div>

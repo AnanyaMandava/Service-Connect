@@ -6,19 +6,19 @@ import './SignUp.css'
 function SignUp(props) {
     const roles = [
         {
-          value: 'Farmer',
-          label: 'Farmer',
+          value: 'Customer',
+          label: 'Customer',
         },
         {
-          value: 'Pilot',
-          label: 'Pilot',
+          value: 'SP',
+          label: 'SP',
         }
       ];
 
       const SaveData=()=>{
         // sending this page details to prev page
         // console.log(document.getElementById("Name").value)
-        if(props.data.role=="Farmer"){
+        if(props.data.role=="Customer"){
         props.sendSignUpToDb(
         createData(document.getElementById("Name").value,
         document.getElementById("Address").value,
@@ -88,7 +88,7 @@ function SignUp(props) {
                 defaultValue=""
               />
             </div>
-            {props.data.role=="Farmer" &&     <div className="row innerrow">
+            {props.data.role=="Customer" &&     <div className="row innerrow">
               {" "}
               <select style={{backgroundColor:"white"}}
                       id="land"
@@ -132,7 +132,7 @@ function SignUp(props) {
                 label="Zip Code"
                 defaultValue=""
               /></div>
-             {props.data.role=="Farmer" &&  <div className="col-sm"><TextField
+             {props.data.role=="Customer" &&  <div className="col-sm"><TextField
                 required
                 id="DriversLicense"
                 label="Drivers License"
@@ -143,7 +143,7 @@ function SignUp(props) {
             </div>
             <div className="row innerrow" style={{justifyContent:"center"}}> </div>
           </div>
-         {props.data.role=="Farmer" &&  <div className="col-sm" style={{padding:"20px"}}>
+         {props.data.role=="Customer" &&  <div className="col-sm" style={{padding:"20px"}}>
             <div className="row innerrow"> Payment Details</div>
             <div className="row innerrow">
               {" "}
@@ -191,10 +191,10 @@ function SignUp(props) {
             <div className="row innerrow" style={{justifyContent:"center"}}> <button className="farmProfileButton-Save" onClick={()=>{SaveData()}}> Save</button></div>
           </div>}
           {
-            props.data.role=="Farmer" && ""
+            props.data.role=="Customer" && ""
           }
-          {props.data.role=="Pilot" &&  <div className="col-sm" style={{padding:"20px"}}>
-            <div className="row innerrow"> Pilot License Details</div>
+          {props.data.role=="SP" &&  <div className="col-sm" style={{padding:"20px"}}>
+            <div className="row innerrow"> SP License Details</div>
             <div className="row innerrow">
               {" "}
               <TextField

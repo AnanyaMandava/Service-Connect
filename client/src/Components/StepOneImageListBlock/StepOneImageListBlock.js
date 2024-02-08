@@ -13,10 +13,14 @@ import ImageListItem from "@mui/material/ImageListItem";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { Radio, Typography } from "@mui/material";
-// import MyCrop from "./crop.jpg";
-import MyFruit from "../../Assets/fruit.jpg";
-import MyNursery from "../../Assets/nursery.jpg";
-import MyLiveStock from "../../Assets/livestock.jpg";
+import cleaning from "../../Assets/Cleaning.webp";
+import driving from "../../Assets/driving.webp";
+import gym from "../../Assets/gym.webp";
+import painting from "../../Assets/painting.webp";
+import packing from "../../Assets/packing.webp";
+import plumbing from "../../Assets/plumbing.webp";
+import repairs from "../../Assets/repairs.webp";
+import saloon from "../../Assets/saloon.webp";
 import "./StepOneImageListBlock.css";
 import { height } from "@mui/system";
 
@@ -33,36 +37,67 @@ const StepOneImageListBlock = (props) => {
 
   const formLands = [
     {
-      title: "West Plot A",
-      category: "Crop",
+      title: "Cleaning",
+      category: "At-Home sevice",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
-      //   image: "./crop.jpg",
-      image:
-        "https://res.cloudinary.com/dtpgi0zck/image/upload/s--D1_2IbT3--/c_fill,h_580,w_860/v1/EducationHub/photos/crops-growing-in-thailand.webp",
+      image: cleaning,
+      //"https://res.cloudinary.com/dtpgi0zck/image/upload/s--D1_2IbT3--/c_fill,h_580,w_860/v1/EducationHub/photos/crops-growing-in-thailand.webp",
     },
 
     {
-      title: "North Plot B",
-      category: "Fruit",
+      title: "Painting",
+      category: "At-Home service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
-      image: MyFruit,
+      image: painting,
       //   image:
       //     "http://www.encyclopediaofukraine.com/pic%5CA%5CP%5CApple%20orchard%20in%20Kyiv%20oblast.jpg",
     },
     {
-      title: "South Plot C",
-      category: "Nursery",
+      title: "Plubming",
+      category: "At-Home service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
-      image: MyNursery,
+      image: plumbing,
       //   image:
       //     "https://www.pthorticulture.com/media/3580/promix-green-house-growing-nursery-crops-and-bark-media.jpg",
     },
 
     {
-      title: "East Plot D",
-      category: "Livestock",
+      title: "Home Repairs",
+      category: "At-Home service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
-      image: MyLiveStock,
+      image: repairs,
+      // image:
+      // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
+    },
+    {
+      title: "Saloon Services",
+      category: "At-Home/Studio service",
+      location: "2237 Old Toll Road, Mariposa CA 95195338",
+      image: saloon,
+      // image:
+      // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
+    },
+    {
+      title: "Driving",
+      category: "External Service",
+      location: "2237 Old Toll Road, Mariposa CA 95195338",
+     image: driving,
+      // image:
+      // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
+    },
+    {
+      title: "Gym Trainer",
+      category: "At-Home/External service",
+      location: "2237 Old Toll Road, Mariposa CA 95195338",
+      image: gym,
+      // image:
+      // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
+    },
+    {
+      title: "Packing and Moving",
+      category: "External service",
+      location: "2237 Old Toll Road, Mariposa CA 95195338",
+      image: packing,
       // image:
       // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
     },
@@ -83,7 +118,7 @@ const StepOneImageListBlock = (props) => {
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         {formLands.map((value, index) => {
           return (
-            <Grid item xs={6} key={index}>
+            <Grid item xs={3} key={index}>
               <Item>
                 <ListItem key={index} disablePadding>
                   <ListItemButton
@@ -111,7 +146,7 @@ const StepOneImageListBlock = (props) => {
                         // srcSet={
                         //   "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm-150*150.jpg?w=150&h=150"
                         // }
-                        width="10px"
+                        width="5px"
                         alt={" "}
                         // loading="lazy"
                       />

@@ -5,7 +5,7 @@ import Chips from "./Chips";
 import './Pilot.css'
 import { useNavigate } from "react-router-dom";
 import PilotBooking from './PilotBookings';
-function Pilot() {
+function SP() {
   const navigate = useNavigate();
 
     return <div >
@@ -41,4 +41,4 @@ function Pilot() {
     </div>;
 }
 
-export default Pilot;
+export default SP;

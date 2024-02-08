@@ -38,8 +38,8 @@ const Step5 = (props) => {
       brand: value.line1,
       equipment: "camera",
       price: value.price,
-      pilotEmail: "",
-      farmerEmail: auth.loginjson[0].userName,
+      spEmail: "",
+      customerEmail: auth.loginjson[0].userName,
        farmLand: farmLand.title+"$"+farmLand.category,
        fromDate: convertDate(props.dateRange[0]),
        toDate: convertDate(props.dateRange[1]),
@@ -151,7 +151,7 @@ const Step5 = (props) => {
                 </td>
                 <tr>
                   <td style={{ marginRight: "200px" }}>
-                    <Typography align="left"> Drone Pilot</Typography>
+                    <Typography align="left"> Drone SP</Typography>
                     <p
                       style={{
                         position: "left",
@@ -160,7 +160,7 @@ const Step5 = (props) => {
                       }}
                     >
                       {" "}
-                      {bookingData && bookingData.pilotName}
+                      {bookingData && bookingData.spName}
                     </p>
                     <p
                       style={{
@@ -170,7 +170,7 @@ const Step5 = (props) => {
                       }}
                     >
                       {" "}
-                      Lisence Number : {bookingData && bookingData.pilotLicense}
+                      Lisence Number : {bookingData && bookingData.spLicense}
                     </p>
                     <p
                       style={{
@@ -321,11 +321,11 @@ const Step5 = (props) => {
 
             {/* Equipment */}
 
-            {/* Pilot Charge */}
+            {/* SP Charge */}
 
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Pilot Charge
+                SP Charge
               </div>
             </div>
 
@@ -333,11 +333,11 @@ const Step5 = (props) => {
               <div className="col-sm columnBill columnBillsub">
                 Drone setup and labor
               </div>
-              <div className="col-sm-2 columnBillsub">{bookingData && bookingData.pilotCharge}</div>
+              <div className="col-sm-2 columnBillsub">{bookingData && bookingData.spCharge}</div>
               {/* <img src={require("../../Assets/Line.svg").default} /> */}
             </div>
 
-            {/* Pilot Charge */}
+            {/* SP Charge */}
           </div>
         </div>
       </div>

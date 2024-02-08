@@ -21,7 +21,7 @@ function ServiceReport() {
 }
     useEffect(()=>{
         const auth = JSON.parse(localStorage.getItem("auth"));
-        const url='http://localhost:8080/agriDrone/getAllFarmerBookings/'+auth.loginjson[0].userName
+        const url='http://localhost:8080/agriDrone/getAllCustomerBookings/'+auth.loginjson[0].userName
         axios.get(url).then((res)=>{
             const data=res.data.filter(x=>{if(x.status=="completed") return x;})
             setBookingData(data);

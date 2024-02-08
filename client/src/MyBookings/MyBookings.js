@@ -13,7 +13,7 @@ function MyBookings() {
       }
     useEffect(()=>{
         const auth = JSON.parse(localStorage.getItem("auth"));
-        const url='http://localhost:8080/agriDrone/getAllFarmerBookings/'+auth.loginjson[0].userName
+        const url='http://localhost:8080/agriDrone/getAllCustomerBookings/'+auth.loginjson[0].userName
         axios.get(url).then((res)=>{
             setBookingData(res.data);
             setShowSpinner(false);

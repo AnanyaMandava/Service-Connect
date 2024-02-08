@@ -122,7 +122,7 @@ function DetailedBooking(props) {
                 Drone Polot{" "}
               </div>
               <div className="row" style={{ fontWeight: "600", color: "grey" }}>
-                Name : {props.row.pilotName}
+                Name : {props.row.spName}
               </div>
               <div className="row" style={{ fontWeight: "600", color: "grey" }}>
                
@@ -258,11 +258,11 @@ function DetailedBooking(props) {
 
             {/* Equipment */}
 
-            {/* Pilot Charge */}
+            {/* SP Charge */}
 
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Pilot Charge
+                SP Charge
               </div>
             </div>
 
@@ -270,11 +270,11 @@ function DetailedBooking(props) {
               <div className="col-sm columnBill columnBillsub">
                 Drone setup and labor
               </div>
-              <div className="col-sm-2 columnBillsub">{currBookingDetails && currBookingDetails.pilotCharge}</div>
+              <div className="col-sm-2 columnBillsub">{currBookingDetails && currBookingDetails.spCharge}</div>
               {/* <img src={require("./../Assets/Line.svg").default} /> */}
             </div>
 
-            {/* Pilot Charge */}
+            {/* SP Charge */}
           </div>
         </div>
         {props.row.status == "completed" ? (

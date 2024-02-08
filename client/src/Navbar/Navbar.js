@@ -9,7 +9,7 @@ function Navbar(props) {
         <div className="navContent">
           {" "}
           <span className="navLinks">
-            <Link class="nav-link" to={props.role == "pilot" ? "/pilot" : "/"}>
+            <Link class="nav-link" to={props.role == "sp" ? "/pilot" : "/"}>
               Home
             </Link>
           </span>{" "}
@@ -19,7 +19,7 @@ function Navbar(props) {
               Profile
             </Link>
           </span>
-          {(props.role == "pilot" || props.role == "admin" )&& <span className="navLinks">
+          {(props.role == "sp" || props.role == "admin" )&& <span className="navLinks">
             <span onClick={()=>{props.changeLoginStatus(false)}}><Link class="nav-link" to="/">
               Logout
             </Link></span>
