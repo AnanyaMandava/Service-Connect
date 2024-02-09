@@ -117,7 +117,7 @@ function App() {
           <Route path="mybookings" element={<MyBookings />} />
           <Route path="service" element={<ServiceReport/>} />
           <Route path="profile" element={<Profile />} />
-          <Route path="bookdrone" element={<BookDrone />} />
+          <Route path="bookservice" element={<BookDrone />} />
           <Route path="maintanance" element={<Maintanance />} />
           <Route path="simulation" element={<Simulation />} />
           <Route path="farmProfile" element={<FarmProfile/>}/>
