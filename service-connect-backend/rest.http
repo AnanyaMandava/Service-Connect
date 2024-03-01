@@ -1,0 +1,10 @@
+get http://localhost:3000
+
+###
+post http://localhost:3001/api/auth/spSignIn
+Content-Type: application/json
+
+{
+    "email" : "abc@gmail.com",
+    "password" : "test"
+}
