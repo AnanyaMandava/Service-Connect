@@ -61,8 +61,8 @@ function Profile() {
 
           </div>
           <div className="col-sm">
-            <div className="row farmProfile"><button className="farmProfileButton"><Link class="nav-link" to="/farmProfile">Farm Profile</Link></button></div>
-            <div className="row farmProfile"><button className="farmProfileButton">Farm Verification</button></div>
+            <div className="row farmProfile"><button className="farmProfileButton"><Link class="nav-link" to="/farmProfile">Customer Address</Link></button></div>
+            {/* <div className="row farmProfile"><button className="farmProfileButton">Farm Verification</button></div> */}
 
           </div>
         </div>

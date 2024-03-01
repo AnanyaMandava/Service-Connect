@@ -193,15 +193,15 @@ let droneData = []
 const selectValues = [
   {
     label: "Service",
-    options: ["Data Collection", "Payload", "Surveillance"],
+    options: ["Kitchen Cleaning", "Full House Cleaning", "Bathroom Cleaning"],
   },
   {
     label: "Price",
     options: ["< $100", "< $200", "< $300"],
   },
   {
-    label: "Equipment",
-    options: ["Camera", "Thermal Camera", "LiDAR", "Pesticide"],
+    label: "Provider",
+    options: ["Abiza", "Khashish saloon"],
   },
   {
     label: "Brand",
@@ -500,7 +500,7 @@ function DroneCatelog(props) {
             />
           </div>
         )}
-        {dronesMatched.length==0 ? " drones found":""}
+        {dronesMatched.length==0 ? " Services found":""}
       </div>
     </Box>
   );

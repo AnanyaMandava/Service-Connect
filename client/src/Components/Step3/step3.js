@@ -55,7 +55,7 @@ const Step3 = (props) => {
             className="col-sm-2"
             style={{ display: "inline-block", marginLeft: "1px" }}
           >
-            <img src={require("../../Assets/drone.svg").default} />
+            {/* <img src={require("../../Assets/drone.svg").default} /> */}
           </div>
           <div
             className="row"

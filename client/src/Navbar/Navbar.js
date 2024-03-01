@@ -15,7 +15,7 @@ function Navbar(props) {
           </span>{" "}
           <span className="navLinks">Contact</span>{" "}
           <span className="navLinks">
-            <Link class="nav-link" to="/PilotProfile">
+            <Link class="nav-link" to="/Profile">
               Profile
             </Link>
           </span>

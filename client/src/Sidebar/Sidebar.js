@@ -19,7 +19,7 @@ function Sidebar(props) {
                 <span className={tab=="maintanance"?'span-li span-li-colored':'span-li '} id="maintanance" onClick={()=>{changeColor("maintanance")}}>
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />
                     <span className='li-span'><Link class="nav-link" to="/maintanance">
-                    Maintanance
+                    Chatbot
                   </Link></span>
                 </li>
                 <img src={require('./../Assets/arrow.svg').default} alt='mySvgImage' />

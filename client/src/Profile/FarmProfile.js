@@ -16,12 +16,12 @@ function FarmProfile() {
     <>
       <div className="farmProfilePage container-fluid">
         <div className="row">
-            <h3 style={{color:"#1A3447",textAlign:"left"}}>Farm Profile</h3>
+            <h3 style={{color:"#1A3447",textAlign:"left"}}>Customer Address</h3>
         </div>
         <div className="row row-farmProfile">
         
           <div className="col-sm" style={{padding:"20px"}}>
-            <div className="row innerrow"> Farm Address</div>
+            <div className="row innerrow"> Customer Address</div>
             <div className="row innerrow">
               {" "}
               <TextField
@@ -67,7 +67,7 @@ function FarmProfile() {
             </div>
             <div className="row innerrow" style={{justifyContent:"center"}}> <button className="farmProfileButton-Save"> Save</button></div>
           </div>
-          <div className="col-sm-6"><button className="farmProfileButton-Farmland">Farmland</button></div>
+          {/* <div className="col-sm-6"><button className="farmProfileButton-Farmland">Farmland</button></div> */}
         </div>
       </div>
     </>

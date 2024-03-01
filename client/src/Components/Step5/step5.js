@@ -76,17 +76,17 @@ const Step5 = (props) => {
             </th> */}
               <tr>
                 <td>
-                  <img
+                  {/* <img
                     src={require("../../Assets/drone.svg").default}
                     style={{
                       border: "1px solid grey",
                       borderRadius: "5px",
                       marginRight: "20px",
                     }}
-                  ></img>
+                  ></img> */}
                 </td>
                 <Typography align="left">
-                  Service ID #{bookingData && bookingData.bookingId}, Drone ID #1{" "}
+                  Service ID #{bookingData && bookingData.bookingId}, Booking ID #1{" "}
                 </Typography>
                 <Typography align="left">{bookingData &&  bookingData.brand}</Typography>
                 <tr>
@@ -137,7 +137,7 @@ const Step5 = (props) => {
             <table>
               <tr>
                 <td>
-                  <img
+                  {/* <img
                     src={require("../../Assets/mypilot.png")}
                     style={{
                       border: "1px solid grey",
@@ -147,11 +147,11 @@ const Step5 = (props) => {
                       width: "120px",
                       marginTop: "10px",
                     }}
-                  ></img>
+                  ></img> */}
                 </td>
                 <tr>
                   <td style={{ marginRight: "200px" }}>
-                    <Typography align="left"> Drone SP</Typography>
+                    <Typography align="left"> Service Provider</Typography>
                     <p
                       style={{
                         position: "left",
@@ -211,7 +211,7 @@ const Step5 = (props) => {
             {/* Drone based cost */}
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Drone Base Cost
+                Service Base Cost
               </div>
               <div className="col-sm-2 columnBillsub">{bookingData && bookingData.droneBaseCost}</div>
               {/* <img src={require("../../Assets/Line.svg").default} /> */}
@@ -221,12 +221,12 @@ const Step5 = (props) => {
             {/* Flights per day */}
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Flights per day
+                Service date and time
               </div>
             </div>
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillsub">
-                1x 10:00 AM - 5:00 PM PST Flight: Full Day
+                1x 10:00 AM - 5:00 PM PST 
               </div>
               <div className="col-sm-2 columnBillsub">20</div>
               {/* <img src={require("../..Assets/Line.svg").default} /> */}
@@ -331,7 +331,7 @@ const Step5 = (props) => {
 
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillsub">
-                Drone setup and labor
+                
               </div>
               <div className="col-sm-2 columnBillsub">{bookingData && bookingData.spCharge}</div>
               {/* <img src={require("../../Assets/Line.svg").default} /> */}
