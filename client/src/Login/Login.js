@@ -150,22 +150,22 @@ function Login(props) {
       setMessage("Invalid Credentials - or no details entered");
       handleClickSnack();
     } else {
-      if (currentUserRole == "SP") {
+      // if (currentUserRole == "SP") {
        
-      axios.post('http://localhost:3001/api/auth/spSignIn',{
-          email:email,
-          password:password,
-        }).then((res)=>{
-          role = "sp";
-          props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
-        }).catch((e)=>{
-          console.log("inside sp error");
-          role=null;
-          setSeverity("error");
-          setMessage("Invalid sp login credentials ");
-          handleClickSnack();
-        })}
-     // if (currentUserRole == "SP") {role = "sp";props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);}
+      // axios.post('http://localhost:3001/api/auth/spSignIn',{
+      //     email:email,
+      //     password:password,
+      //   }).then((res)=>{
+      //     role = "sp";
+      //     props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
+      //   }).catch((e)=>{
+      //     console.log("inside sp error");
+      //     role=null;
+      //     setSeverity("error");
+      //     setMessage("Invalid sp login credentials ");
+      //     handleClickSnack();
+      //   })}
+     if (currentUserRole == "SP") {role = "sp";props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);}
       
       // else if (currentUserRole == "Customer") {
       //   axios.post('http://localhost:8080/api/auth/customerSignIn',{
