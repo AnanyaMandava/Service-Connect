@@ -1,0 +1,29 @@
+.spanRowId{
+    cursor: pointer;
+    
+}
+
+/* .spanRowId :hover{
+    background-color: grey;
+
+    
+} */
+
+.ActiveStatus{
+    border: 1px solid green;
+    border-radius: 5px;
+    padding: 4px;
+    color: green;
+}
+.NotActiveStatus{
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 4px;
+    color: red;
+}
+.FinishedStatus{
+    border: 1px solid #226DFF;
+    border-radius: 5px;
+    padding: 4px;
+    color:#226DFF;
+}

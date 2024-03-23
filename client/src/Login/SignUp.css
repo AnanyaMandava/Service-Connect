@@ -1,0 +1,36 @@
+
+.farmProfilePage{
+    margin-left:20px
+}
+
+.row-farmProfile{
+    width: 90%;
+    margin-top: 70px;
+    border: px solid black;
+    padding: 25px;
+    /* margin-left: 40px; */
+    /* height: 400px; */
+    background: white;
+    border-radius: 10px;
+}
+
+.innerrow{
+    padding: 10px;
+}
+
+.farmProfileButton-Save{
+    padding: 17px;
+    width: 50%;
+    background-color: #1A3447;
+    color: white;
+    border-radius: 5px;
+}
+
+.farmProfileButton-Farmland{
+    padding: 17px;
+    width: 60%;
+    background-color: #1A3447;
+    color: white;
+    border-radius: 5px;
+    margin-top: 35%;
+}

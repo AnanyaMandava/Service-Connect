@@ -1,0 +1,19 @@
+/* .farmlandimages {
+  width: 10px !important;
+  height: 150px !important;
+} */
+.farmlandimages {
+  max-width: 100%; /* ensures the image width does not exceed the container's width */
+  height: auto; /* maintains the aspect ratio */
+  object-fit: contain; /* makes sure the image is scaled to be as large as possible without cropping or stretching */
+}
+
+ImageListItem img {
+  width: 1500px;
+  height: 150px;
+}
+
+.css-l086p4-MuiImageListItem-root .MuiImageListItem-img {
+  width: 450px !important;
+  height: 300px !important;
+}

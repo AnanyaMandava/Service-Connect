@@ -1,0 +1,97 @@
+@import "rsuite/dist/rsuite.css";
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+.sidenav{
+    width:306px;
+    height:115vh;
+    background-color: #FFFFFF;
+    margin-top: 90px;
+}
+
+.sidenav-heading{
+    position: absolute;
+width: 150px;
+height: 39px;
+left: 40px;
+top: 126px;
+display: flex;
+font-family: 'Poppins', sans-serif;
+font-style: normal;
+font-weight: 600;
+font-size: 26px;
+line-height: 39px;
+/* identical to box height */
+
+letter-spacing: 0.01em;
+
+color: #000000;
+
+}
+.sidenav-heading-span{
+margin-left: 10px;
+}
+
+.icon1{
+    /* background-image: url('./../Assets/Vector\ \(1\).svg'); */
+}
+
+.sidenav-ul{
+    position: absolute;
+/* width: 92px; */
+height: 21px;
+left:17px;
+top: 230px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 21px;
+/* identical to box height */
+
+letter-spacing: -0.01em;
+
+color: #1A3447;
+list-style: none;
+}
+
+.sidenav-ul ul{
+    font-size: 14px;
+}
+
+.li-dashboard{
+    display: flex;
+    /* margin-bottom: 50px; */
+    margin-right: 10px;
+    
+}
+
+.li-span{
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.span-li{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 20px;
+    
+    
+}
+
+.span-li-colored{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color:#1A3447 ;
+    color: white;
+    
+}
+
+.span-li :hover{
+    
+    /* background-color:#1A3447 ; */
+}

@@ -1,0 +1,20 @@
+@import "rsuite/dist/rsuite.css";
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+.home{
+    font-family: 'Poppins', sans-serif;
+}
+.graph{
+    background-color: white;
+    border-radius: 10px;
+}
+
+.chips{
+    margin-top: 20px;
+}
+
+.chips-row{
+    margin-bottom: 20px;
+}

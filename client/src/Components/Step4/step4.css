@@ -1,0 +1,24 @@
+.billtableRow {
+  border-bottom: 0.2px dashed gray;
+}
+
+.billTable {
+  border-radius: 5px;
+  /* border: 0.4px solid gray; */
+}
+
+.drone-border {
+  border: 0.4px solid gray;
+  border-radius: 5px;
+}
+
+.drone-step4 {
+  display: "inline-block";
+
+  marginright: "550px";
+  paddingleft: "25px";
+}
+
+.row billTable {
+  margin-top: "-200px";
+}

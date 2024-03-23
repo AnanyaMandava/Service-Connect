@@ -1,0 +1,34 @@
+{
+    "drones":[
+        {
+            "drone_name":"DJI Mini SE",
+            "type":"Data Collection",
+            "stabilization":"3-Axil Gimbal",
+            "camera":"2.7K Camera",
+            "Flight_Time":"30 minutes flight time",
+            "FLight_Speed":"8m/s",
+            "weight":"249 grams",
+            "price":"$80/hour"
+        },
+        {
+            "drone_name":"DJI Phantom 4 Pro",
+            "type":"Sureillance",
+            "stabilization":"3-Axil Gimbal",
+            "camera":"4K Camera",
+            "Flight_Time":"30 minutes flight time",
+            "FLight_Speed":"13m/s",
+            "weight":"1375 grams",
+            "price":"$100/hour"
+        },
+        {
+            "drone_name":"DJI Agras T20",
+            "type":"Payload",
+            "stabilization":"3-Axil Gimbal",
+            "camera":"2.7K Camera",
+            "Flight_Time":"15 minutes flight time",
+            "FLight_Speed":"7m/s",
+            "weight":"47.5 kgs",
+            "price":"$180/hour"
+        }
+    ]
+}
