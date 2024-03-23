@@ -84,11 +84,12 @@ function SignUp(props) {
               <TextField
                 required
                 id="Address"
+                helperText="Please enter your address"
                 label="Address"
                 defaultValue=""
               />
             </div>
-            {props.data.role=="Customer" &&     <div className="row innerrow">
+            {/* {props.data.role=="Customer" &&     <div className="row innerrow">
               {" "}
               <select style={{backgroundColor:"white"}}
                       id="land"
@@ -109,7 +110,7 @@ function SignUp(props) {
                       LiveStock
                       </option>
                     </select>
-            </div>}
+            </div>} */}
             <div className="row innerrow">
               {" "}
               <TextField
@@ -132,18 +133,18 @@ function SignUp(props) {
                 label="Zip Code"
                 defaultValue=""
               /></div>
-             {props.data.role=="Customer" &&  <div className="col-sm"><TextField
+             {/* {props.data.role=="Customer" &&  <div className="col-sm"><TextField
                 required
                 id="DriversLicense"
                 label="Drivers License"
                 defaultValue=""
-              /></div>}
+              /></div>} */}
              
               
             </div>
             <div className="row innerrow" style={{justifyContent:"center"}}> </div>
           </div>
-         {props.data.role=="Customer" &&  <div className="col-sm" style={{padding:"20px"}}>
+         {/* {props.data.role=="Customer" &&  <div className="col-sm" style={{padding:"20px"}}>
             <div className="row innerrow"> Payment Details</div>
             <div className="row innerrow">
               {" "}
@@ -189,8 +190,8 @@ function SignUp(props) {
               
             </div>
             <div className="row innerrow" style={{justifyContent:"center"}}> <button className="farmProfileButton-Save" onClick={()=>{SaveData()}}> Save</button></div>
-          </div>}
-          {
+          </div>} */}
+          {/* {
             props.data.role=="Customer" && ""
           }
           {props.data.role=="SP" &&  <div className="col-sm" style={{padding:"20px"}}>
@@ -224,8 +225,9 @@ function SignUp(props) {
             </div>
             
             <div className="row innerrow" style={{justifyContent:"center"}}> <button className="farmProfileButton-Save" onClick={()=>{SaveData()}}> Save</button></div>
-          </div>}
-          
+          </div>} */}
+        <div className="row innerrow" style={{justifyContent:"center"}}> <button className="farmProfileButton-Save" onClick={()=>{SaveData()}}> Save</button></div>
+
         </div>
       </div>
     </>;

@@ -2,13 +2,14 @@ import React, { Component, useState } from "react";
 import "./Login.css";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { color } from "@mui/system";
-import MenuItem from "@mui/material/MenuItem";
+// import { color } from "@mui/system";
+// import MenuItem from "@mui/material/MenuItem";
 import SignUp from "./SignUp";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import MenuItem from '@mui/material/MenuItem';
 import axios from "axios";
-import { DatePicker } from "@mui/x-date-pickers";
+// import { DatePicker } from "@mui/x-date-pickers";
 function Login(props) {
   const [openSnack, setOpenSnack] = useState(false);
   const vertical = "top";
@@ -20,6 +21,12 @@ function Login(props) {
   const handleClickSnack = () => {
     setOpenSnack(true);
     console.log(openSnack);
+  };
+
+  const [gender, setGender] = useState('');
+
+  const handleChange = (event) => {
+    setGender(event.target.value);
   };
 
   const Alert = React.forwardRef(function Alert(props, ref) {
@@ -69,7 +76,7 @@ function Login(props) {
     console.log("save to db for signup");
     console.log(data);
     console.log(dataR);
-    if (data.role == "Customer") {
+    if (data.role === "Customer") {
       axios.post("http://localhost:8080/api/auth/signup", {
         username: dataR.Name,
         email: data.email,
@@ -89,7 +96,7 @@ function Login(props) {
         state: "California",
         zipcode: dataR.ZipCode,
       });
-    } else if (data.role == "SP") {
+    } else if (data.role === "SP") {
       console.log("inside sp");
       axios.post("http://localhost:8080/api/auth/signup", {
         username: dataR.Name,
@@ -144,13 +151,13 @@ function Login(props) {
     const currentUserRole=document.getElementById("role").value;
     let role = null;
     console.log(currentUserRole);
-    if (email == "") {
+    if (email === "") {
       console.log("inside null");
       setSeverity("error");
       setMessage("Invalid Credentials - or no details entered");
       handleClickSnack();
     } else {
-      // if (currentUserRole == "SP") {
+      // if (currentUserRole === "SP") {
        
       // axios.post('http://localhost:3001/api/auth/spSignIn',{
       //     email:email,
@@ -165,9 +172,9 @@ function Login(props) {
       //     setMessage("Invalid sp login credentials ");
       //     handleClickSnack();
       //   })}
-     if (currentUserRole == "SP") {role = "sp";props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);}
+      if (currentUserRole === "SP") {role = "sp";props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);}
       
-      // else if (currentUserRole == "Customer") {
+      // else if (currentUserRole === "Customer") {
       //   axios.post('http://localhost:8080/api/auth/customerSignIn',{
       //     email:email,
       //     password:password,
@@ -182,11 +189,11 @@ function Login(props) {
       //     handleClickSnack();
       //   })
       // }
-      else if (currentUserRole == "Customer"){
+      else if (currentUserRole === "Customer"){
           role = "customer";
           props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
          }
-      else if (email == "admin") {role = "admin"; props.changeLoginStatus(true, currentUserRole.toLowerCase());};
+      else if (email === "admin") {role = "admin"; props.changeLoginStatus(true, currentUserRole.toLowerCase());};
       
       console.log(email + " " + password);
       
@@ -206,9 +213,9 @@ function Login(props) {
       >
         <Alert severity={severity}>{message}</Alert>
       </Snackbar>
-      {proceedSignUp == false ? (
+      {proceedSignUp === false ? (
         <div className="container-fluid login-container">
-          {signup == false ? (
+          {signup === false ? (
             <div className="row">
               <div className="col-sm-6 image-width">
                 <img
@@ -302,7 +309,7 @@ function Login(props) {
               <div className="col-sm form">
                 <Box
                   sx={{
-                    paddingTop: "100px",
+                    paddingTop: "0px",
                     width: "60%",
                     maxWidth: "100%",
                     color: "#1A3447",
@@ -311,66 +318,83 @@ function Login(props) {
                   <TextField
                     fullWidth
                     label="Name"
+                    helperText = "Enter Full Name "
                     id="Name"
                     sx={{ color: "#1A3447" }}
                   />
                   <br />
                   <br />
-                  <TextField fullWidth label="Phone" id="Phone" />
+                  <TextField
+                    fullWidth 
+                    helperText = "Enter Phone in 10 digits "
+                    label="Phone" 
+                    id="Phone" />
                   <br />
                   <br />
-                  <TextField fullWidth label="Email" id="Email" type="email" />
+                  <TextField fullWidth label="Email" helperText = "Enter Valid Email address " id="Email" type="email" />
                   <br />
                   <br />
                   <TextField
                     fullWidth
                     label="Password"
+                    helperText = "Use 8 characters or more for your password"
                     id="Password"
                     type="password"
                   />
 
-                  <br></br>
+                  <br />
+                  <br />
+                  <TextField
+                    fullWidth
+                    helperText = "Date of Birth"
+                    id="dob"
+                    type="Date"
+                  />
 
-                  <br></br>
-                  <div
-                    style={{
-                      display: "flex",
-                      marginTop: "10px",
-                      justifyContent: "space-evenly",
-                    }}
-                  >
-                    <input type="Date" className="inputDate" id="dob"></input>
-                    <select
+                  <br />
+                  <br />
+                
+                  <TextField
+                      fullWidth
                       id="gender"
                       select
-                      label="Select"
-                      className="roleDropdown"
+                      label="Gender"
+                      value={gender}
+                      onChange={handleChange}
+                      helperText="Please select your gender"
                     >
-                      <option key="Male" value="Male">
+                      <MenuItem key="Male" value="Male">
                         Male
-                      </option>
-                      <option key="Female" value="Female">
+                      </MenuItem>
+                      <MenuItem key="Female" value="Female">
                         Female
-                      </option>
-                    </select>
-                    <br></br>
-                    <select
+                      </MenuItem>
+                      {/* Add more options as needed */}
+                  </TextField>
+                    
+                  <br />
+                  <br />
+                    <TextField fullWidth
                       id="role"
                       select
-                      label="Select"
+                      label="Role"
                       helperText="Please select your role"
-                      className="roleDropdown"
-                      onChange={(e) => {
-                        console.log(e.value);
-                      }}
+                      // onChange={(e) => {
+                      //   console.log(e.value);
+                      // }}
                     >
-                      {roles.map((option) => (
+                      {/* {roles.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
                         </option>
-                      ))}
-                    </select>
-                  </div>
+                      ))} */}
+                      <option key="CUST" value="CUST">
+                        Customer
+                      </option>
+                      <option key="SP" value="SP">
+                        SP
+                      </option>
+                    </TextField>
                   <button
                     className="button-login"
                     onClick={() => {

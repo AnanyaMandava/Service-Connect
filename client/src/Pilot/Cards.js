@@ -32,12 +32,18 @@ export default function Cards() {
     >
       <Card component="li" sx={{ minWidth: 500, flexGrow: 1 }}>
         <CardCover>
-        <img
+          {/* <img
+            src="http://dslv9ilpbe7p1.cloudfront.net/gnoSzE3ZY8U7Kt8TMd1aLg_store_banner_image.jpeg"
+            srcSet="https://blog.dronebase.com/hubfs/BlogHeader_sp%20%E2%80%93%204@2x-min.png"
+            loading="lazy"
+            alt=""
+          /> */}
+            <img
              src={img}
              srcSet={img}
              loading="lazy"
              alt="Service Connect"
-          />
+            /> 
         </CardCover>
         <CardContent>
           <Typography

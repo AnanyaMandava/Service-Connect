@@ -1,7 +1,7 @@
-import React, { Component , useState} from 'react';
+import React, { Component, useState} from 'react';
 import './Sidebar.css'
 //import { ReactComponent as DashSvg } from './../Assets/Vector/svg1.svg';
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Sidebar(props) {
     const [tab,setTab]=useState(null);
@@ -16,15 +16,15 @@ function Sidebar(props) {
 
         <div className='sidenav-ul'>
             <ul style={{listStyle: "none",marginLeft:"-40px"}}>
-                <span className={tab=="maintanance"?'span-li span-li-colored':'span-li '} id="maintanance" onClick={()=>{changeColor("maintanance")}}>
+                <span className={tab==="maintanance"?'span-li span-li-colored':'span-li '} id="maintanance" onClick={()=>{changeColor("maintanance")}}>
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />
-                    <span className='li-span'><Link class="nav-link" to="/maintanance">
+                    <span className='li-span'><Link class="nav-link" to="/maintenance">
                     Chatbot
                   </Link></span>
                 </li>
                 <img src={require('./../Assets/arrow.svg').default} alt='mySvgImage' />
                 </span>
-                <span className={tab=="bookdrone"?'span-li span-li-colored':'span-li '} id="bookdrone" onClick={()=>{changeColor("bookdrone")}}>
+                <span className={tab==="bookdrone"?'span-li span-li-colored':'span-li '} id="bookdrone" onClick={()=>{changeColor("bookdrone")}}>
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />
                     <span className='li-span'><Link class="nav-link" to="/bookservice">Book a Service</Link></span>
 
@@ -33,7 +33,7 @@ function Sidebar(props) {
 
                 </span>
 
-                <span className={tab=="mybookings"?'span-li span-li-colored':'span-li '} id="mybookings" onClick={()=>{changeColor("mybookings")}}>
+                <span className={tab==="mybookings"?'span-li span-li-colored':'span-li '} id="mybookings" onClick={()=>{changeColor("mybookings")}}>
 
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />
                     <span className='li-span'><Link class="nav-link" to="/mybookings">My Bookings</Link></span>
@@ -42,7 +42,7 @@ function Sidebar(props) {
                 <img src={require('./../Assets/arrow.svg').default} alt='mySvgImage' />
                 </span>
 
-                <span className={tab=="service"?'span-li span-li-colored':'span-li '} id="service" onClick={()=>{changeColor("service")}}>
+                <span className={tab==="service"?'span-li span-li-colored':'span-li '} id="service" onClick={()=>{changeColor("service")}}>
 
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />
                     <span className='li-span'><Link class="nav-link" to="/service">Service Report</Link></span>
@@ -50,7 +50,7 @@ function Sidebar(props) {
                 </li>
                 <img src={require('./../Assets/arrow.svg').default} alt='mySvgImage' />
                 </span>
-                <span className={tab=="profile"?'span-li span-li-colored':'span-li '} id="profile" onClick={()=>{changeColor("profile")}}>
+                <span className={tab==="profile"?'span-li span-li-colored':'span-li '} id="profile" onClick={()=>{changeColor("profile")}}>
 
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />
                     <span className='li-span'><Link class="nav-link" to="/profile">Profile</Link></span>

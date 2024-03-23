@@ -1,9 +1,9 @@
 
 import Layout from './Layout/Layout'
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
-import Maintanance from "./Maintanance/Maintanance";
+import Maintenance from "./Maintenance/Maintenance";
 import BookDrone from "./BookDrone/BookDrone";
 import Profile from "./Profile/Profile";
 import ServiceReport from "./ServiceReport/ServiceReport"
@@ -118,7 +118,7 @@ function App() {
           <Route path="service" element={<ServiceReport/>} />
           <Route path="profile" element={<Profile />} />
           <Route path="bookservice" element={<BookDrone />} />
-          <Route path="maintanance" element={<Maintanance />} />
+          <Route path="maintenance" element={<Maintenance />} />
           <Route path="simulation" element={<Simulation />} />
           <Route path="farmProfile" element={<FarmProfile/>}/>
           <Route path="pilot" element={<Pilot/>}/>
