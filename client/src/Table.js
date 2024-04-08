@@ -14,7 +14,7 @@ import './Table.css'
 export default function BasicTable(props) {
   function openBooking(row){
     console.log(row.id)
-    props.detailedBooking(row)
+    // props.detailedBooking(row)
     }
   return (
     <Paper sx={{ width: '100%', overflow: 'scroll' }}>
@@ -22,38 +22,39 @@ export default function BasicTable(props) {
       <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Service ID</TableCell>
-            <TableCell align="left">Farmland</TableCell>
-            <TableCell align="left">Land Type&nbsp;</TableCell>
-            <TableCell align="left">Service&nbsp;</TableCell>
-            <TableCell align="left">Time&nbsp;</TableCell>
-            <TableCell align="left">Status&nbsp;</TableCell>
+            <TableCell>S.No</TableCell>
+            <TableCell align="left">Service Name&nbsp;</TableCell>
+            <TableCell align="left">Service Type&nbsp;</TableCell>
+            <TableCell align="left">Service Provider&nbsp;</TableCell>
+            <TableCell align="left">Booking Date&nbsp;</TableCell>
+            <TableCell align="left">Payment Status&nbsp;</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.rows.filter((row)=>{
             if(props.search==null)
                 return row;
-            else if(props.search!=null && (row.farmLand.split('$')[0].toLowerCase().includes(props.search.toLowerCase()) || row.serviceType.toLowerCase().includes(props.search.toLowerCase()))){
+            else if(props.search!=null && (row.service.serviceName.toLowerCase().includes(props.search.toLowerCase()) || row.serviceType.serviceType.toLowerCase().includes(props.search.toLowerCase()) || row.serviceProvider.fullname.toLowerCase().includes(props.search.toLowerCase()))){
               return row
             }
             else{
 
             }
-          }).map((row) => (
+          }).map((row, index) => (
             <TableRow
-              key={row.bookingId}
+              key={row._id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               onClick={()=>{openBooking(row)}}
               className="spanRowId"
             >
               <TableCell component="th" scope="row">
-                {row.bookingId}
+                {index + 1}
               </TableCell>
-              <TableCell align="left">{row.farmLand && row.farmLand.split('$')[0]}</TableCell>
-              <TableCell align="left">{row.farmLand && row.farmLand.split('$')[1]}</TableCell>
-              <TableCell align="left">{row.serviceType}</TableCell>
-              <TableCell align="left">{row.fromDate}</TableCell>
+              <TableCell align="left">{row.service.serviceName}</TableCell>
+              <TableCell align="left">{row.serviceType.serviceType}</TableCell>
+              <TableCell align="left">{row.serviceProvider.fullname}</TableCell>
+              <TableCell align="left">{row.bookingDate}</TableCell>
+              <TableCell align="left">{row.paymentStatus}</TableCell>
               <TableCell align="left">{
               row.status=="Active"? <span className='ActiveStatus'>{row.status}</span> : row.status=="completed" ?<span className='FinishedStatus'>{row.status}</span>:<span className='NotActiveStatus'>{row.status}</span>
               }</TableCell>

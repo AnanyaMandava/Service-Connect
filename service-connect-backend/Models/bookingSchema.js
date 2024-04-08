@@ -27,16 +27,8 @@ const bookingSchema = new mongoose.Schema({
         type: Date, 
         default: Date.now 
     },
-    startTime: { 
-        type: Date, 
-        required: true 
-    },
-    endTime: { 
-        type: Date, 
-        required: true 
-    },
     totalAmount: { 
-        type: Date, 
+        type: Number, 
         required: true 
     },
     paymentStatus: { 

@@ -31,14 +31,12 @@ function DetailedBooking(props) {
     nav=nav.replace('#','')
     navigate(nav)
   }
-  const [currBookingDetails,setCurrBookingDetails]=useState();
+  // localStorage.setItem('userId', res.data.userId);
+  const [bookingDetails,setbookingDetails]=useState();
   useEffect(()=>{
-    axios.get('http://localhost:8080/agriDrone/getBooking/'+props.row.bookingId).then((res)=>{
-      setCurrBookingDetails(res.data)
-      //date=res.data.fromDate;
-      setDate(res.data.fromDate);
-      console.log("date from booking"+date)
-      console.log(moment(new Date()).isSame(res.data.fromDate, "day"))
+    const userId = localStorage.getItem('userId');
+    axios.get(`http://localhost:3001/all/getallcustbookings`).then((res)=>{
+      setbookingDetails(res.data)
     })
   },[])
 
@@ -196,7 +194,7 @@ function DetailedBooking(props) {
             </div>
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillsub">
-              {currBookingDetails && currBookingDetails.serviceDuration} Day - On-Demand
+              {bookingDetails && bookingDetails.serviceDuration} Day - On-Demand
               </div>
               <div className="col-sm-2 columnBillsub">20</div>
               {/* <img src={require("./../Assets/Line.svg").default} /> */}
@@ -220,7 +218,7 @@ function DetailedBooking(props) {
             </div>
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillsub">Price</div>
-              <div className="col-sm-2 columnBillsub">{currBookingDetails && currBookingDetails.totalPrice}</div>
+              <div className="col-sm-2 columnBillsub">{bookingDetails && bookingDetails.totalPrice}</div>
               {/* <img src={require("./../Assets/Line.svg").default} /> */}
             </div>
 
@@ -251,8 +249,8 @@ function DetailedBooking(props) {
             </div>
 
             <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">1x {currBookingDetails && currBookingDetails.equipment} </div>
-              <div className="col-sm-2 columnBillsub">{currBookingDetails && currBookingDetails.equipmentCost}</div>
+              <div className="col-sm columnBill columnBillsub">1x {bookingDetails && bookingDetails.equipment} </div>
+              <div className="col-sm-2 columnBillsub">{bookingDetails && bookingDetails.equipmentCost}</div>
               {/* <img src={require("./../Assets/Line.svg").default} /> */}
             </div>
 
@@ -270,7 +268,7 @@ function DetailedBooking(props) {
               <div className="col-sm columnBill columnBillsub">
                 Drone setup and labor
               </div>
-              <div className="col-sm-2 columnBillsub">{currBookingDetails && currBookingDetails.spCharge}</div>
+              <div className="col-sm-2 columnBillsub">{bookingDetails && bookingDetails.spCharge}</div>
               {/* <img src={require("./../Assets/Line.svg").default} /> */}
             </div>
 
