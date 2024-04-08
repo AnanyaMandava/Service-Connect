@@ -8,6 +8,7 @@ import SignUp from "./SignUp";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import axios from "axios";
+// import user from "../../../service-connect-backend/Models/userSchema";
 // import { DatePicker } from "@mui/x-date-pickers";
 function Login(props) {
   const [openSnack, setOpenSnack] = useState(false);
@@ -122,6 +123,8 @@ function Login(props) {
           role: currentUserRole,
         }).then((res)=>{
           role = "sp";
+          console.log("Login successful for the user:", res);
+          localStorage.setItem('userId', res.data.userId);
           props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
           console.log("inside sp success");
         }).catch((e)=>{
@@ -144,6 +147,7 @@ function Login(props) {
           role: currentUserRole,
         }).then((res)=>{
           role = "customer";
+          localStorage.setItem('userId', res.data.userId);
           props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
           console.log("inside customer success");
         }).catch((e)=>{

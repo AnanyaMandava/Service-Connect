@@ -5,6 +5,7 @@ const usersController = require("../controller/usersController");
 const servicesController = require("../controller/servicesController");
 const chatbotController = require("../controller/chatbotController");
 const serviceTypeController = require("../controller/serviceTypeController");
+const serviceProviderController = require("../controller/serviceCatalogController");
 
 router.get("/", function(req,res){
     return res.status(200).json("Successfully Loaded");
@@ -44,6 +45,10 @@ router.get("/all/getservicetype", serviceTypeController.getServiceTypeByServiceN
 
 //Calling Chatbot API
 router.post('/all/chat', chatbotController.chatHandler);
+
+
+// Adding a new Service Catalog (Service Provider attached to Service Type and Service)
+router.post('/all/addserviceprovider', serviceProviderController.addServiceProviderAPI);
 
 
 module.exports = router;

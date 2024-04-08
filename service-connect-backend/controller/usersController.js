@@ -53,7 +53,7 @@ exports.logInApi = async (req, res) => {
 
         // If passwords match, login is successful
         if (isPasswordValid && user.role === role) {
-            return res.status(200).json({ message: "Login successful", userType: user.role });
+            return res.status(200).json({ message: "Login successful", userType: user.role, userId: user._id });
         } else {
             return res.status(401).json({ message: "Incorrect password" });
         }

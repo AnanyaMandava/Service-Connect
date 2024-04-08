@@ -9,12 +9,17 @@ const moment = require('moment-timezone');
 const servicesInfo = require("../Models/serviceSchema");
 const serviceType = require("../Models/serviceTypeSchema");
 const serviceProvider = require("../Models/serviceCatalogSchema");
+const userName = require("../Models/userSchema");
+const Booking = require("../Models/bookingSchema");
 
 var intentHistory=[];
-var selected_service="";
-var selected_type="";
-var selected_provider="";
-var selected_timings="";
+let selected_service="";
+let selected_type="";
+let selected_provider="";
+let selected_timings="";
+let b_service_id = "";
+let b_service_type_id = "";
+let b_service_provider_id = "";
 
 const openAiSummary = async (msg, summaryData) => {
     if (conversationHistory.length === 0) {
@@ -63,7 +68,7 @@ const detectIntent = async (msg) => {
     });
     intent.push({
         role: "user",
-        content: msg
+        content: msg // I want to book massage service tomorrow --> response
     });
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
@@ -153,8 +158,11 @@ const getService = async () => {
         // Fetch all services from the serviceSchema
         const allServices = await servicesInfo.find();
 
+        allServices.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
+
         // If services are found, send them as a response
         let sList = allServices.map((service, index) => `${index + 1}. ${service.serviceName}`).join('\n');
+        console.log("sList:", sList);
 
         return sList;
     } catch (error) {
@@ -187,20 +195,24 @@ const getServiceType = async (selected_service) => {
 };
 
 
-const getServiceProviders = async (selected_service) => {
+const getServiceProviders = async (selected_type) => {
     try {
         // Find the service document based on the selected service name
-        const service = await servicesInfo.findOne({ serviceName: selected_service });
+        const servicetype = await serviceType.findOne({ serviceType: selected_type });
 
-        if (!service) {
+        if (!servicetype) {
             throw new Error('Service not found');
         }
 
         // Find all service types associated with the service
-        const serviceTypes = await serviceType.find({ serviceId: service._id });
+        const serviceproviders = await serviceProvider.find({ serviceType: servicetype._id });
+
+        const serviceProviderIds = serviceproviders.map(provider => provider.serviceProvider);
+
+        const providerNames = await userName.find({ _id: { $in: serviceProviderIds } });
 
         // Convert the results to a format suitable for sending
-        let providerList = serviceTypes.map((type, index) => `${index + 1}. ${type.serviceType}`).join('\n');
+        let providerList = providerNames.map((provider, index) => `${index + 1}. ${provider.fullname}`).join('\n');
 
         return providerList;
     } catch (error) {
@@ -222,8 +234,10 @@ exports.chatHandler = async (req, res) => {
     if (intentHistory[intentHistory.length - 1] === 'NEW_BOOKING') {
         try {
             const services = await servicesInfo.find().distinct('serviceName');
+            // const services = await getService();
             let serviceList = services.map((service, index) => `${index + 1}. ${service}`).join('\n');
             let responseMessage = `Available services:\n${serviceList}`;
+            console.log("User ID:", req.body.userId);
             res.json({ message: responseMessage });
         } catch (error) {
             console.error('Error fetching services:', error);
@@ -236,17 +250,17 @@ exports.chatHandler = async (req, res) => {
 
         // Use detectOptionSelection to determine the user's choice
         const openAiResponse = await detectOptionSelection(userMessage, serviceList);
-        console.log("OpenAI Response1:", openAiResponse);
-        console.log("serviceList:", serviceList);
 
         if (openAiResponse) {
-            const selected_service = openAiResponse; // Assuming openAiResponse contains the selected service type name
+            // const 
+            selected_service = openAiResponse; // Assuming openAiResponse contains the selected service type name
             console.log("selected service:", selected_service);
             const serviceTypes = await getServiceType(selected_service);
             console.log("servicetype1:", serviceTypes);
              servicesInfo.findOne({ serviceName: selected_service })
                 .then(service => {
                     console.log("Service ID:", service._id);
+                    b_service_id = service._id;
                     if (!service) {
                         res.json({ message: `Service ${selected_service} not found` });
                     } else {
@@ -257,13 +271,9 @@ exports.chatHandler = async (req, res) => {
                             .then(serviceTypes => {
                                 console.log("Service doc det:", service.serviceName);
                                 console.log("Service Types:", serviceTypes);
-                                // if (serviceTypes.length === 0) {
-                                //     res.json({ message: `No service types found for ${selected_service}` });
-                                // } else {
                                     let serviceTypesList = serviceTypes.map((serviceType, index) => `${index + 1}. ${serviceType.serviceType}`).join('\n');
                                     let responseMessage = `You have selected: ${selected_service}\nAvailable service types:\n${serviceTypesList}`;
                                     res.json({ message: responseMessage });
-                                // }
                             })
                             .catch(error => {
                                 console.error('Error fetching service types:', error);
@@ -279,16 +289,49 @@ exports.chatHandler = async (req, res) => {
             res.json({ message: "I couldn't understand your selection. Please try again." });
         }
     }   
-    else if(intentHistory[intentHistory.length-1] === 'OPTION' && intentHistory[intentHistory.length-2] === 'OPTION'){
-        const serviceTypeList = await getServiceType(userMessage);
+    else if(intentHistory[intentHistory.length-1] === 'OPTION' && intentHistory[intentHistory.length-2] === 'OPTION' && intentHistory[intentHistory.length-3] === 'NEW_BOOKING'){
+        console.log("Selected Service:", selected_service);
+        const serviceTypeList = await getServiceType(selected_service);
     
         const openAiResponse = await detectOptionSelection(userMessage, serviceTypeList);
-        console.log("OpenAI Response2:", openAiResponse);
+        console.log("OpenAI Response2:", userMessage);
     
         if (openAiResponse) {
             selected_type = openAiResponse;
-            // const providerList = await getServiceProviders(selected_type);
-            let responseMessage = `Selected service provider:\n${selected_type}, Please provide a date and time for your appointment`;
+            const providerList = await getServiceProviders(selected_type);
+            console.log("Providers List:", providerList);
+            serviceType.findOne({ serviceType: selected_type })
+            .then(servicetype => {
+                console.log("Service Type Id:", servicetype._id);
+                b_service_type_id = servicetype._id;
+                if (!servicetype) {
+                    res.json({ message: `Service ${selected_type} not found` });
+                } else {
+                    console.log("Service ID:", servicetype._id);
+                                let responseMessage = `You have selected: ${selected_type}\nAvailable service providers:\n${providerList}`;
+                                res.json({ message: responseMessage });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching service:', error);
+                res.status(500).send("An error has occurred");
+            });
+    } else {
+        res.json({ message: "I couldn't understand your selection. Please try again." });
+    }
+    }
+    else if(intentHistory[intentHistory.length-1] === 'OPTION' && intentHistory[intentHistory.length-2] === 'OPTION' && intentHistory[intentHistory.length-3] === 'OPTION'){
+        const providerList = await getServiceProviders(selected_type);
+    
+        const openAiResponse = await detectOptionSelection(userMessage, providerList);
+        console.log("OpenAI Response:", openAiResponse);
+    
+        if (openAiResponse) {
+            selected_provider = openAiResponse;
+            const selectedProviderRecord = await userName.findOne({ fullname: selected_provider });
+            b_service_provider_id = selectedProviderRecord._id;
+            // const providerList = await getServiceProviders(selected_service);
+            let responseMessage = `Selected service provider:\n${selected_provider}, Please provide a date and time for your appointment`;
             res.json({ message: responseMessage });
         } else {
             res.json({ message: "I couldn't understand your selection. Please try again." });
@@ -300,61 +343,66 @@ exports.chatHandler = async (req, res) => {
         if (openAiResponse) {
             selected_timings = openAiResponse;//selected timings has the following value = 2022-12-12 11:00:00 11:00:00 12:00:00
             let responseMessage = `you have selected the following time slot:\n${selected_timings}`;
-            const [bookedDate, startTime, dummy, endTime] = selected_timings.split(" ");
-
-            const query = `
-                INSERT INTO Bookings (user_name, service_name, service_provider, booked_slot_date, booked_slot_start_time, booked_slot_end_time)
-                VALUES (?, ?, ?, ?, ?, ?);
-            `;
-
-            db.query(query, ['ana@gmail.com', selected_service, selected_type, bookedDate, startTime, endTime], (error, results) => {
-                if(error) {
-                    // Handle error
-                    console.log("Error inserting into Bookings:", error);
-                    res.send("An error occurred while booking the slot.");
-                } else {
-                    // Handle success
-                    console.log("Booking successful:", results);
-                    res.json({ message: "Booking successful!" });
-                }
+            const [bookedDate, startTime, endTime] = selected_timings.split(" ");
+            console.log("Response Message", responseMessage);
+            console.log("Split time details:", selected_timings.split(" "));
+            console.log("Service ID, Service Type ID, User ID, Service Provider ID", b_service_id, b_service_type_id, req.body.userId, b_service_provider_id);
+            console.log("Start Time", new Date(`${bookedDate}T${startTime}`));
+            console.log("End Time", new Date(`${bookedDate}T${endTime}`));
+            const newBooking = new Booking({
+                user: req.body.userId, // Assuming userId is available in req.body
+                serviceProvider: b_service_provider_id, // Assuming selected_provider is available
+                service: b_service_id, // Assuming selected_service is available
+                serviceType: b_service_type_id, // Assuming selected_type is available
+                bookingDate: new Date(bookedDate),
+                startTime: new Date(`${bookedDate}T${startTime}`),
+                endTime: new Date(`${bookedDate}T${endTime}`),
+                totalAmount: 0, // You may adjust this as needed
+                paymentStatus: "Pending" // You may adjust this as needed
             });
-            // res.json({ message: responseMessage });
+    
+            try {
+                await newBooking.save();
+                res.json({ message: "Booking successful!" });
+            } catch (error) {
+                console.error('Error saving booking:', error);
+                res.status(500).json({ error: 'An error occurred while saving booking' });
+            }
         } else {
             res.json({ message: "I couldn't understand your selection. Please try again." });
         }
     }
-    else if(intentHistory[intentHistory.length-1]=="SHOW"){
-        const query = `
-        SELECT 
-          service_name, 
-          service_provider, 
-          location, 
-          booked_slot_date, 
-          booked_slot_start_time, 
-          booked_slot_end_time 
-        FROM Bookings 
-        WHERE user_name='ana@gmail.com'`;
-        db.query(query, [email], (error, results) => {
-            if (error) {
-              console.error('Error fetching user bookings:', error);
-              return res.status(500).send('Error fetching bookings');
-            }
-            if (results.length > 0) {
-              // Format the results in a user-friendly way
-              let bookingsList = `You currently have ${results.length} booking(s): \n`;
-                  results.forEach((booking, index) => {
-                      const formattedDate = moment(booking.booked_slot_date).format('MMM Do');
-                      const formattedStartTime = moment(booking.booked_slot_start_time, 'HH:mm:ss').format('ha');
-                      bookingsList += `${index + 1}) Service: ${booking.service_name} \n`;
-                      bookingsList += `   Provider: ${booking.service_provider}\n`;
-                      bookingsList += `   Date and Time: ${formattedDate}, ${formattedStartTime}\n\n`;
+    else if (intentHistory[intentHistory.length - 1] === "SHOW") {
+        const userId = req.body.userId; // Assuming userId is available in req.body
+    
+        Booking.find({ user: userId })
+            .populate('service')
+            .populate('serviceProvider')
+            .populate('serviceType')
+            .then(bookings => {
+                if (bookings.length > 0) {
+                    let bookingsList = `You currently have ${bookings.length} booking(s): \n`;
+                    bookings.forEach((booking, index) => {
+                        const formattedDate = moment(booking.bookingDate).format('MMM Do');
+                        const formattedStartTime = moment(booking.startTime).format('ha');
+                        const formattedEndTime = moment(booking.endTime).format('ha');
+                        bookingsList += `${index + 1}) Service: ${booking.service.serviceName} \n`;
+                        bookingsList += `   Type: ${booking.serviceType.serviceType}\n`;
+                        bookingsList += `   Date: ${formattedDate}\n`;
+                        bookingsList += `   Time: ${formattedStartTime} to ${formattedEndTime}\n\n`;
                     });
-                    res.json({ message: bookingsList.trim(), bookings : "showbookings" });
-                  } else {
+                    res.json({ message: bookingsList.trim(), bookings: "showbookings" });
+                } else {
                     res.json({ message: 'You have no bookings.' });
-                  }
-                });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user bookings:', error);
+                res.status(500).send('Error fetching bookings');
+            });
     }
+    
+    
 
     // const intent = await detectIntent(userMessage);
     // if (intent === 'ROUTE') {

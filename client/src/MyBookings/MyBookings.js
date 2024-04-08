@@ -60,7 +60,7 @@ function MyBookings() {
     
     {(!showDetails && !showSpinner)&& <div className='col-sm-4 welcomeHeading'>
             <h3>Welcome to Bookings!</h3>
-            <p>Check the status of your drone booking here</p>
+            <p>Check the status of your service bookings here</p>
         </div>}
    
     </div>

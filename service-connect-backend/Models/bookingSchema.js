@@ -5,17 +5,22 @@ const mongoose = require('mongoose');
 const bookingSchema = new mongoose.Schema({
     user: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
+        ref: 'user', 
         required: true 
     },
     serviceProvider: {  // ( serviceprovider id ) - > (user id with role sp)
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
+        ref: 'user', 
         required: true 
     },
-    serviceCatalog: {   
+    service: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'ServiceCatalog', 
+        ref: 'Service',
+        required: true 
+    },
+    serviceType: {   
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'ServiceType', 
         required: true 
     },
     bookingDate: { 
@@ -31,7 +36,7 @@ const bookingSchema = new mongoose.Schema({
         required: true 
     },
     totalAmount: { 
-        type: Number, 
+        type: Date, 
         required: true 
     },
     paymentStatus: { 
