@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // Define the schema for the service types
 const serviceTypeSchema = new mongoose.Schema({
     serviceType: { type: String, required: true, unique: true },
-    serviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
+    service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
     description: { type: String },
     duration: { type: Number },
     image: { type: Buffer }, // Assuming you want to store images as Buffer data

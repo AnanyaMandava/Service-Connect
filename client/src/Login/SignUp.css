@@ -3,6 +3,10 @@
     margin-left:20px
 }
 
+.state-dropdown {
+    width: 40%;
+}
+
 .row-farmProfile{
     width: 90%;
     margin-top: 70px;

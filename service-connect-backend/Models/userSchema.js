@@ -37,7 +37,7 @@ const signUpSchema = new mongoose.Schema({
     role: { 
         type: String, 
         required: true, 
-        enum: ['CUST', 'SP'] 
+        enum: ['Customer', 'SP'] 
     },
     password: { type: String, required: true },
     address: { type: String, required: true }, // Consider more complex validation or API verification for real-world scenarios

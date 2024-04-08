@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import "./Login.css";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -7,7 +7,6 @@ import TextField from "@mui/material/TextField";
 import SignUp from "./SignUp";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import MenuItem from '@mui/material/MenuItem';
 import axios from "axios";
 // import { DatePicker } from "@mui/x-date-pickers";
 function Login(props) {
@@ -23,11 +22,16 @@ function Login(props) {
     console.log(openSnack);
   };
 
-  const [gender, setGender] = useState('');
-
-  const handleChange = (event) => {
-    setGender(event.target.value);
-  };
+  const gender = [
+    {
+      value: "Male",
+      label: "Male",
+    },
+    {
+      value: "Female",
+      label: "Female",
+    },
+  ];
 
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -44,80 +48,33 @@ function Login(props) {
     },
     {
       value: "SP",
-      label: "SP",
+      label: "Service Provider",
     },
   ];
   const [signup, setSignUp] = useState(false);
   const [proceedSignUp, setproceedSignUp] = useState(false);
 
   const sendSignUpToDb = (dataR) => {
-    // signup data to be sent to the dataabse
-    // axios.post("http://localhost:8080/api/auth/signup",{
-    //   username: "sp3",
-    //   email: "sp3@gmail.com",
-    //   password: "12345678",
-    //   phone_number: 98765432,
-    //   role : "customer",
-    //   gender : "male",
-    //   date_of_birth : "1998-12-20",
-    //   address: "Fountain Plaza",
-    //   driver_license: "FAED23RW1",
-    //   farm_utility:"crop",
-    //   payment_method: "card",
-    //   payment_details : "1245 2345 1256",
-    //   streetno: 2,
-    //   unit_no:902,
-    //   city:"san jose",
-    //   state:"california",
-    //   zipcode: 95113
-    //   }
-    //   )
 
     console.log("save to db for signup");
     console.log(data);
     console.log(dataR);
-    if (data.role === "Customer") {
-      axios.post("http://localhost:8080/api/auth/signup", {
-        username: dataR.Name,
+      axios.post("http://localhost:3001/all/signup", {
         email: data.email,
-        password: data.password,
-        phone_number: data.phone,
+        mobile: data.mobile,
+        fullname: data.fullname,
+        sex: data.sex,
         role: data.role,
-        gender: data.gender,
-        date_of_birth: data.dob,
-        address: dataR.Address,
-        driver_license: dataR.DriversLicense,
-        farm_utility: dataR.land,
-        payment_method: "card",
-        payment_details: dataR.CardNumber,
-        streetno: 2,
-        unit_no: 902,
-        city: dataR.City,
-        state: "California",
-        zipcode: dataR.ZipCode,
-      });
-    } else if (data.role === "SP") {
-      console.log("inside sp");
-      axios.post("http://localhost:8080/api/auth/signup", {
-        username: dataR.Name,
-        email: data.email,
         password: data.password,
-        phone_number: data.phone,
-        role: data.role,
-        gender: data.gender,
-        date_of_birth: data.dob,
-        address: dataR.Address,
-        sp_license: dataR.DriversLicense,
-        farm_utility: "none",
-        payment_method: "card",
-        payment_details: "000",
-        streetno: 2,
-        unit_no: 902,
-        city: dataR.City,
-        state: "California",
-        zipcode: dataR.ZipCode,
+        address: dataR.address,
+        city: dataR.city,
+        state: dataR.state,
+        zipcode: dataR.zipcode,
+      }).then(response => {
+        console.log("Signup successful:", response.data);
+      }).catch(error => {
+        console.error("Error signing up:", error);
       });
-    }
 
     setproceedSignUp(false);
     setSignUp(!signup);
@@ -127,27 +84,27 @@ function Login(props) {
     setSignUp(!signup);
   };
 
-  const createData = (name, phone, email, password, role, gender, dob) => {
-    return { name, phone, email, password, role, gender, dob };
+  const createData = (fullname, mobile, email, password, role, sex) => {
+    return { fullname, mobile, email, password, role, sex };
   };
   const handleSignUp = () => {
     setproceedSignUp(true);
+    console.log(document.getElementById("fullname").value);
     setData(
       createData(
-        document.getElementById("Name").value,
-        document.getElementById("Phone").value,
-        document.getElementById("Email").value,
-        document.getElementById("Password").value,
+        document.getElementById("fullname").value,
+        document.getElementById("mobile").value,
+        document.getElementById("email").value,
+        document.getElementById("password").value,
         document.getElementById("role").value,
-        document.getElementById("gender").value,
-        document.getElementById("dob").value
+        document.getElementById("sex").value
       )
     );
   };
 
   const validateLogin = (e) => {
-    const email = document.getElementById("Email").value;
-    const password = document.getElementById("Password").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
     const currentUserRole=document.getElementById("role").value;
     let role = null;
     console.log(currentUserRole);
@@ -157,49 +114,52 @@ function Login(props) {
       setMessage("Invalid Credentials - or no details entered");
       handleClickSnack();
     } else {
-      // if (currentUserRole === "SP") {
+      if (currentUserRole === "SP") {
        
-      // axios.post('http://localhost:3001/api/auth/spSignIn',{
-      //     email:email,
-      //     password:password,
-      //   }).then((res)=>{
-      //     role = "sp";
-      //     props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
-      //   }).catch((e)=>{
-      //     console.log("inside sp error");
-      //     role=null;
-      //     setSeverity("error");
-      //     setMessage("Invalid sp login credentials ");
-      //     handleClickSnack();
-      //   })}
-      if (currentUserRole === "SP") {role = "sp";props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);}
+      axios.post('http://localhost:3001/all/login',{
+          email:email,
+          password:password,
+          role: currentUserRole,
+        }).then((res)=>{
+          role = "sp";
+          props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
+          console.log("inside sp success");
+        }).catch((e)=>{
+          console.log("inside sp error");
+          role=null;
+          setSeverity("error");
+          setMessage("Invalid sp login credentials ");
+          handleClickSnack();
+        })}
+      // if (currentUserRole === "SP") 
+      //     {
+      //       role = "sp";
+      //       props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
+      //     }
       
-      // else if (currentUserRole === "Customer") {
-      //   axios.post('http://localhost:8080/api/auth/customerSignIn',{
-      //     email:email,
-      //     password:password,
-      //   }).then((res)=>{
-      //     role = "customer";
-      //     props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
-      //   }).catch((e)=>{
-      //     console.log("inside customer null");
-      //     role=null;
-      //     setSeverity("error");
-      //     setMessage("Invalid customer login credentials ");
-      //     handleClickSnack();
-      //   })
-      // }
-      else if (currentUserRole === "Customer"){
+      else if (currentUserRole === "Customer") {
+        axios.post('http://localhost:3001/all/login',{
+          email:email,
+          password:password,
+          role: currentUserRole,
+        }).then((res)=>{
           role = "customer";
           props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
-         }
-      else if (email === "admin") {role = "admin"; props.changeLoginStatus(true, currentUserRole.toLowerCase());};
-      
-      console.log(email + " " + password);
-      
-       
-      
-      
+          console.log("inside customer success");
+        }).catch((e)=>{
+          console.log("inside customer null");
+          role=null;
+          setSeverity("error");
+          setMessage("Invalid customer login credentials ");
+          handleClickSnack();
+        })
+      }
+      // else if (currentUserRole === "Customer"){
+      //     role = "customer";
+      //     props.changeLoginStatus(true, currentUserRole.toLowerCase(),email);
+      //    }
+      // else if (email === "admin") {role = "admin"; props.changeLoginStatus(true, currentUserRole.toLowerCase());};  
+      // console.log(email + " " + password);
     }
   };
   return (
@@ -236,7 +196,7 @@ function Login(props) {
                   <TextField
                     fullWidth
                     label="Email"
-                    id="Email"
+                    id="email"
                     type="email"
                     sx={{ color: "#1A3447" }}
                     required
@@ -246,7 +206,7 @@ function Login(props) {
                   <TextField
                     fullWidth
                     label="Password"
-                    id="Password"
+                    id="password"
                     type="password"
                     required
                   />
@@ -266,10 +226,6 @@ function Login(props) {
                   >
                     {[
                       ...roles,
-                      {
-                        value: "Admin",
-                        label: "Admin",
-                      },
                     ].map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -302,7 +258,7 @@ function Login(props) {
               <div className="col-sm-6 image-width">
                 <img
                   className="login"
-                  src={require("./../Assets/Login.svg").default}
+                  src={require("./../Assets/login-serviceconnect.webp")}
                   alt="mySvgImage"
                 />
               </div>
@@ -317,84 +273,73 @@ function Login(props) {
                 >
                   <TextField
                     fullWidth
-                    label="Name"
+                    label="FullName"
                     helperText = "Enter Full Name "
-                    id="Name"
+                    id="fullname"
                     sx={{ color: "#1A3447" }}
                   />
                   <br />
                   <br />
                   <TextField
                     fullWidth 
-                    helperText = "Enter Phone in 10 digits "
-                    label="Phone" 
-                    id="Phone" />
+                    helperText = "Enter Mobile Number in 10 digits "
+                    label="Mobile" 
+                    id="mobile" />
                   <br />
                   <br />
-                  <TextField fullWidth label="Email" helperText = "Enter Valid Email address " id="Email" type="email" />
+                  <TextField fullWidth label="Email" helperText = "Enter Valid Email address " id="email" type="email" />
                   <br />
                   <br />
                   <TextField
                     fullWidth
                     label="Password"
                     helperText = "Use 8 characters or more for your password"
-                    id="Password"
+                    id="password"
                     type="password"
                   />
-
                   <br />
-                  <br />
-                  <TextField
-                    fullWidth
-                    helperText = "Date of Birth"
-                    id="dob"
-                    type="Date"
-                  />
-
-                  <br />
-                  <br />
-                
-                  <TextField
-                      fullWidth
-                      id="gender"
-                      select
-                      label="Gender"
-                      value={gender}
-                      onChange={handleChange}
-                      helperText="Please select your gender"
-                    >
-                      <MenuItem key="Male" value="Male">
-                        Male
-                      </MenuItem>
-                      <MenuItem key="Female" value="Female">
-                        Female
-                      </MenuItem>
-                      {/* Add more options as needed */}
-                  </TextField>
+                  <br />    
+                  <select
+                    id="sex"
+                    select
+                    label="Select"
+                    helperText="Please select your gender"
+                    className="roleDropdown"
+                    style={{ width: "100px" }}
+                    onChange={(e) => {
+                      console.log(e.value);
+                    }}
+                  >
+                    {[
+                      ...gender,
+                    ].map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                     
                   <br />
                   <br />
-                    <TextField fullWidth
-                      id="role"
-                      select
-                      label="Role"
-                      helperText="Please select your role"
-                      // onChange={(e) => {
-                      //   console.log(e.value);
-                      // }}
-                    >
-                      {/* {roles.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))} */}
-                      <option key="CUST" value="CUST">
-                        Customer
+                  <select
+                    id="role"
+                    select
+                    label="Select"
+                    helperText="Please select your role"
+                    className="roleDropdown"
+                    style={{ width: "100px" }}
+                    onChange={(e) => {
+                      console.log(e.value);
+                    }}
+                  >
+                    {[
+                      ...roles,
+                    ].map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
-                      <option key="SP" value="SP">
-                        SP
-                      </option>
-                    </TextField>
+                    ))}
+                  </select>
                   <button
                     className="button-login"
                     onClick={() => {

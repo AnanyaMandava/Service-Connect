@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose")
+const cors = require("cors");
 const app = express();
 const allRoutes = require('./routes/allRoutes');
 
@@ -22,10 +23,12 @@ database.once('connected', (connected) => {
   console.log('Database connected')
 })
 
-app.use(express.json())
+app.use(express.json());
+
+app.use(cors());
 
 app.listen(3001, () => {
   console.log(`Server listening on 3001`);
 });
 
-app.use('', allRoutes)
+app.use('', allRoutes);
