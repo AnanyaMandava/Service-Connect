@@ -15,8 +15,8 @@ import { StaticDateRangePicker } from "@mui/x-date-pickers-pro/StaticDateRangePi
 
 function SelectedDroneDetailsFlight(props) {
   const [value, setValue] = React.useState([null, null]);
-  console.log("Drone:", props.drone);
-  console.log("farmLand:", props.farmLand);
+  console.log("Provider:", props.provider);
+  console.log("service:", props.service);
   return (
     <div style={{ width: "100px" }}>
       <LocalizationProvider
@@ -35,14 +35,14 @@ function SelectedDroneDetailsFlight(props) {
             </tr>
             <tr>
               <td>
-                <b>farm:</b>
+                <b>service:</b>
               </td>
               <td>
                 <Typography align="bottom" ml="5px" mt={0.2}>
-                  {props.farmLand.location}
+                  {props.service.serviceName}
                 </Typography>
                 <Typography align=" left" ml="5px">
-                  {props.farmLand.title} : {props.farmLand.category}{" "}
+                  {props.service.serviceName} : {props.service.serviceName}{" "}
                 </Typography>
               </td>
             </tr>
@@ -52,7 +52,7 @@ function SelectedDroneDetailsFlight(props) {
               </td>
               <td>
                 <Typography align="bottom" ml="5px" mt={0.2}>
-                  {props.drone.service}
+                  {props.provider.price}
                 </Typography>
               </td>
             </tr>

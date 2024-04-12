@@ -52,8 +52,9 @@ exports.addServiceTypeAPI = async (req, res) => {
 
 exports.getServiceTypeByServiceName = async (req, res) => {
     try {
-        const { serviceName } = req.body; // Assuming serviceName is passed in the request body
-
+        const { serviceName } = req.params; // Assuming serviceName is passed in the request params
+        
+        console.log("ServiceName from params:", serviceName);
         // Find the service document based on the serviceName
         const service = await servicesInfo.findOne({ serviceName: serviceName });
         console.log("Service(GST):", service);
@@ -67,9 +68,12 @@ exports.getServiceTypeByServiceName = async (req, res) => {
         console.log("ServiceId (GST):", serviceId);
 
         // Query the ServiceType collection to find documents associated with the serviceId
-        const serviceTypes = await ServiceType.find({ service: serviceId });
-        console.log("ServiceTypes (GST):", serviceTypes);
+        const serviceTypesData = await ServiceType.find({ service: serviceId }).select('serviceType');
+        console.log("ServiceTypes (GST):", serviceTypesData);
 
+        // Extract serviceType values from the array of objects
+        const serviceTypes = serviceTypesData.map(entry => entry.serviceType);
+        console.log("ServiceTypes (Extracted):", serviceTypes);
 
         return res.status(200).json(serviceTypes);
     } catch (error) {
@@ -77,3 +81,21 @@ exports.getServiceTypeByServiceName = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+// In your routes file
+exports.getServiceTypeID =async (req, res) => {
+    try {
+      const { serviceTypeName } = req.query;
+      console.log("ServiceType (GST ID)", serviceTypeName);
+      const serviceType = await ServiceType.findOne({ serviceType: serviceTypeName });
+      if (serviceType) {
+        res.json(serviceType);
+      } else {
+        res.status(404).send('Service type not found');
+      }
+    } catch (error) {
+      console.error("Error fetching service type ID:", error);
+      res.status(500).send('Server error');
+    }
+  };
+  

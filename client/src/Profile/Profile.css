@@ -16,6 +16,18 @@
     text-align: left;
 }
 
+.editButton {
+    background-color: #007bff; /* Bootstrap primary blue color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px; /* Add some space above the button */
+    font-weight: bold; /* Make the text bold */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+
 .image{
     padding-top: 20px;
 }

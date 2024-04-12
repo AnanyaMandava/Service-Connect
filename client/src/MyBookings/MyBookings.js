@@ -11,9 +11,12 @@ function MyBookings() {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/all/getallcustbookings`).then((res) => {
+        const userId = localStorage.getItem('userId');
+        console.log("userId:", userId);
+        axios.get(`http://localhost:3001/all/getallcustbookings/${userId}`).then((res) => {
             setBookingData(res.data);
             setShowSpinner(false);
+            console.log("Bookings:", res.data);
         });
     }, []);
 

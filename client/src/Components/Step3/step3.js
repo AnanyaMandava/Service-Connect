@@ -13,9 +13,10 @@ const Step3 = (props) => {
   // here we will have all the data in props to display in the page
   // need to add th html tags
   // refer to the stepCoreContent.js file for the props name used.
-  console.log(props.droneSelected, props.selectedFarmLand);
-  const value = props.droneSelected;
-  const farmLand = props.selectedFarmLand;
+  console.log("Step3: Props:", props);
+  console.log(props.providerSelected, props.selectedService);
+  const value = props.providerSelected;
+  // const farmLand = props.selectedService;
   return (
     <div>
       <Box mt={2} ml={5}>
@@ -33,22 +34,28 @@ const Step3 = (props) => {
             style={{ display: "inline-block", float: "left", width: "150px" }}
           >
             <div className="row" style={{ fontWeight: "600", color: "grey" }}>
-              {value.line1}
+              {value.service.serviceName}
             </div>
             <div className="row" style={{ fontWeight: "600", color: "grey" }}>
-              {value.service}
+              {value.serviceProvider.fullname}
             </div>
             <div className="row" style={{ fontWeight: "600", color: "grey" }}>
-              {value.equipment}
+              {value.serviceType.serviceType}
             </div>
             <div className="row" style={{ fontWeight: "600", color: "grey" }}>
-              {value.line6}
+              {value.serviceProvider.address}
             </div>
             <div className="row" style={{ fontWeight: "300", color: "grey" }}>
-              {value.line7}
+              {value.serviceProvider.city}
             </div>
             <div className="row" style={{ fontWeight: "300", color: "grey" }}>
-              {value.line8}
+              {value.serviceProvider.state}
+            </div>
+            <div className="row" style={{ fontWeight: "300", color: "grey" }}>
+              {value.serviceProvider.zipcode}
+            </div>
+            <div className="row" style={{ fontWeight: "300", color: "grey" }}>
+              {value.serviceProvider.mobile}
             </div>
           </div>
           <div
@@ -106,10 +113,10 @@ const Step3 = (props) => {
 
               <td>
                 <Typography align="bottom" ml="5px" mt={0.2}>
-                  {farmLand.location}
+                  {value.serviceProvider.address}
                 </Typography>
                 <Typography align=" left" ml="5px">
-                  {farmLand.title} : {farmLand.category}{" "}
+                  {value.service.serviceName} : {value.serviceType.serviceType}{" "}
                 </Typography>
               </td>
             </tr>

@@ -13,9 +13,9 @@ const steps = ["a", "b", "c", "d", "e"];
 
 export default function HorizontalLinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [selectedFarmLand, setSelectedFarmLand] = React.useState(0);
-  const [droneSelected, setdroneSelected] = React.useState(false);
-  const [selectedDroneDetails,setSelectedDroneDetails]=React.useState();
+  const [selectedService, setSelectedService] = React.useState(0);
+  const [providerSelected, setProviderSelected] = React.useState(null);
+  const [selectedProviderDetails,setSelectedProviderDetails]=React.useState();
   const [skipped, setSkipped] = React.useState(new Set());
   const isStepSkipped = (step) => {
     return skipped.has(step);
@@ -73,13 +73,13 @@ export default function HorizontalLinearStepper() {
           <StepHeaderInformation step={activeStep} />
           <StepCoreContent
             step={activeStep}
-            setSelectedFarmLand={setSelectedFarmLand}
-            selectedFarmLand={selectedFarmLand}
-            droneSelected={droneSelected}
-            setdroneSelected={setdroneSelected}
+            setSelectedService={setSelectedService}
+            selectedService={selectedService}
+            providerSelected={providerSelected}
+            setProviderSelected={setProviderSelected}
             handleDateRange={handleDateRange}
             dateRange={dateRange}
-            setSelectedDroneDetails={setSelectedDroneDetails}
+            setSelectedProviderDetails={setSelectedProviderDetails}
           />
         </div>
       )}

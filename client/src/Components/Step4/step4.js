@@ -12,8 +12,8 @@ const Step4 = (props) => {
   // here we will have all the data in props to display in the page
   // need to add th html tags
   // refer to the stepCoreContent.js file for the props name used.
-  const value = props.droneSelected;
-  const farmLand = props.selectedFarmLand;
+  const value = props.providerSelected;
+  const farmLand = props.selectedService;
   return (
     <div>
      {console.log(new Date(props.dateRange[0])+"inside step 4")}

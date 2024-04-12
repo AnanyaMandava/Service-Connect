@@ -10,12 +10,12 @@ import "./step5.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { format } from 'date-fns';
+
 const Step5 = (props) => {
   // here we will have all the data in props to display in the page
   // need to add th html tags
   // refer to the stepCoreContent.js file for the props name used.
-  const value = props.droneSelected;
-  const farmLand = props.selectedFarmLand;
+  const { providerSelected, selectedService, dateRange } = props;
   const navigate = useNavigate();
   const convertDate=(str)=> {
     var date = new Date(str),
@@ -27,30 +27,29 @@ const Step5 = (props) => {
 
   const [bookingData,setBookingData]=useState();
   useEffect(() => {
-    console.log(value);
-    console.log(farmLand);
-    console.log(convertDate(props.dateRange[0]))
-    const auth = JSON.parse(localStorage.getItem("auth"));
-   
+    console.log(localStorage.getItem('userId'), providerSelected.serviceProvider._id, selectedService._id, providerSelected.serviceType._id, dateRange[0], providerSelected.price);
+    const bookingPayload = {
+      userId: localStorage.getItem('userId'), // Assuming _id is available in auth.loginjson[0]
+      serviceProviderId: providerSelected.serviceProvider._id,
+      serviceId: providerSelected.service._id,
+      serviceTypeId: providerSelected.serviceType._id,
+      bookedDate: dateRange[0],
+      startTime: "10:00", // Replace with actual start time
+      endTime: "17:00", // Replace with actual end time
+      TotalAmount: providerSelected.price,
+      status: "Upcoming",
+    };
 
-    axios.post('http://localhost:8080/agriDrone/bookDrone',{
-      serviceType: value.service,
-      brand: value.line1,
-      equipment: "camera",
-      price: value.price,
-      spEmail: "",
-      customerEmail: auth.loginjson[0].userName,
-       farmLand: farmLand.title+"$"+farmLand.category,
-       fromDate: convertDate(props.dateRange[0]),
-       toDate: convertDate(props.dateRange[1]),
-       paymentDate:false,
-      status:"active"
-  
-    }).then((res)=>{
-      console.log(res);
-      setBookingData(res.data)
-    })
-  }, []);
+    axios
+      .post("http://localhost:3001/all/bookService", bookingPayload)
+      .then((res) => {
+        setBookingData(res.data);
+        console.log("Booking Data:", res.data);
+      })
+      .catch((error) => {
+        console.error("Error creating booking:", error);
+      });
+  }, [providerSelected, selectedService, dateRange]);
   return (
     <div>
       
@@ -100,7 +99,7 @@ const Step5 = (props) => {
                       }}
                     >
                       {" "}
-                      {value.service}
+                      {selectedService.serviceName}
                     </p>
                     <p
                       style={{
@@ -110,7 +109,7 @@ const Step5 = (props) => {
                       }}
                     >
                       {" "}
-                      {farmLand.location}
+                      {providerSelected.address}
                     </p>
                     <p
                       style={{
@@ -120,7 +119,7 @@ const Step5 = (props) => {
                       }}
                     >
                       {" "}
-                      {farmLand.title} : {farmLand.category}
+                      {providerSelected.serviceType.serviceType}
                     </p>
                   </td>
                 </tr>

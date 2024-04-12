@@ -10,25 +10,25 @@ import DroneCatelog from "../DroneCatelog/droneCatelog";
 
 const StepCoreContent = (props) => {
   const step = props.step;
-  const setSelectedFarmLand = props.setSelectedFarmLand;
-  const setdroneSelected = props.setdroneSelected;
-  const selectedFarmLand = props.selectedFarmLand;
-  const droneSelected = props.droneSelected;
+  const setSelectedService = props.setSelectedService;
+  const setProviderSelected = props.setProviderSelected;
+  const selectedService = props.selectedService;
+  const providerSelected = props.providerSelected;
   let component;
   switch (step + 1) {
     case 1:
       component = (
         <StepOneImageListBlock
-          setSelectedFarmLand={setSelectedFarmLand}
-          selectedFarmLand={selectedFarmLand}
+          setSelectedService={setSelectedService}
+          selectedService={selectedService}
         />
       );
       break;
     case 2:
       component = (
         <DroneCatelog
-          selectedFarmLand={selectedFarmLand}
-          setdroneSelected={setdroneSelected}
+          selectedService={selectedService}
+          setProviderSelected={setProviderSelected}
           handleDateRange={props.handleDateRange}
         />
       );
@@ -36,8 +36,8 @@ const StepCoreContent = (props) => {
     case 3:
       component = (
         <Step3
-          selectedFarmLand={selectedFarmLand}
-          droneSelected={droneSelected}
+          selectedService={selectedService}
+          providerSelected={providerSelected}
           dateRange={props.dateRange}
         />
       );
@@ -45,8 +45,8 @@ const StepCoreContent = (props) => {
     case 4:
       component = (
         <Step4
-          selectedFarmLand={selectedFarmLand}
-          droneSelected={droneSelected}
+          selectedService={selectedService}
+          providerSelected={providerSelected}
           dateRange={props.dateRange}
         />
       );
@@ -54,8 +54,8 @@ const StepCoreContent = (props) => {
     case 5:
       component = (
         <Step5
-          selectedFarmLand={selectedFarmLand}
-          droneSelected={droneSelected}
+          selectedService={selectedService}
+          providerSelected={providerSelected}
           dateRange={props.dateRange}
         />
       );
@@ -66,10 +66,10 @@ const StepCoreContent = (props) => {
   return (
     <Box mt={2}>
       {component}
-      {selectedFarmLand && (
+      {selectedService && (
         <Typography sx={{ mt: 1 }}>
           {" "}
-          Selected Service: {selectedFarmLand.title}{" "}
+          Selected Service: {selectedService.title}{" "}
         </Typography>
       )}
     </Box>

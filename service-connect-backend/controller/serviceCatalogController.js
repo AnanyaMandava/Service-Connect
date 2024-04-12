@@ -28,3 +28,28 @@ exports.addServiceProviderAPI = async (req,res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+// In your routes file
+exports.getRecords = async (req, res) => {
+    try {
+        const { serviceTypeId, maxPrice } = req.query;
+        const serviceProviders = await serviceCatalog.find({
+            serviceType: serviceTypeId,
+            price: { $lte: maxPrice }
+        })
+        .populate('service')
+        .populate('serviceType')
+        .populate({
+            path: 'serviceProvider',
+            select: 'fullname email mobile address city state zipcode' // Select the fields you need
+        });
+
+        res.json(serviceProviders);
+    } catch (error) {
+        console.error("Error fetching service providers:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+
+  

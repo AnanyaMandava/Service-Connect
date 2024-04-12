@@ -93,9 +93,9 @@ exports.userInfoAPI = async (req,res) => {
 // Modify your existing code to include a new endpoint for fetching user details
 exports.getUserDetails = async (req, res) => {
     try {
-        const email = req.params.email;
+        const userId = req.params.userId;
 
-        const user = await signUpInfo.findOne({ email: email });
+        const user = await signUpInfo.findById(userId);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -125,3 +125,20 @@ exports.getAllUsers = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+// Edit Profile API
+exports.updateUser = async (req, res) => {
+    const userId = req.params.id;
+    const updatedData = req.body;
+
+    try {
+        const updatedUser = await signUpInfo.findByIdAndUpdate(userId, updatedData, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

@@ -21,13 +21,16 @@ router.post("/all/signup", usersController.signUpAPI);
 router.post("/all/login", usersController.logInApi);
 
 // Fetch the user record from user table based on Email
-router.get("/all/userdetails/:email", usersController.getUserDetails);
+router.get("/all/userdetails/:userId", usersController.getUserDetails);
 
 // Fetch the user record from User table based on UserID
 router.get("/all/userinfo/:id", usersController.userInfoAPI);
 
 // Fetch all user records from Users Schema
 router.get("/all/users", usersController.getAllUsers);
+
+// Edit Profile for user
+router.put('/all/updateuser/:id', usersController.updateUser);
 
 // Add a new service into Services table
 router.post("/all/addservice", servicesController.addServiceAPI);
@@ -42,7 +45,10 @@ router.get('/all/services', servicesController.fetchServiceAPI);
 router.post("/all/addservicetype", serviceTypeController.addServiceTypeAPI);
 
 // Fetch Service Type records based on Service Name
-router.get("/all/getservicetype", serviceTypeController.getServiceTypeByServiceName);
+router.get("/all/getservicetype/:serviceName", serviceTypeController.getServiceTypeByServiceName);
+
+// Fetch serviceType ID from serviceType
+router.get("/all/getservicetypeid", serviceTypeController.getServiceTypeID);
 
 //Calling Chatbot API
 router.post('/all/chat', chatbotController.chatHandler);
@@ -50,10 +56,16 @@ router.post('/all/chat', chatbotController.chatHandler);
 // Adding a new Service Catalog (Service Provider attached to Service Type and Service)
 router.post('/all/addserviceprovider', serviceProviderController.addServiceProviderAPI);
 
+// Fetch Records based on ServiceType ID and Price range
+router.get('/all/getspsearchrecords', serviceProviderController.getRecords);
+
 // Get all bookings for an user
 router.get("/all/getcustbookings/:userId", bookingsController.fetchBookingsAPI);
 
 // Get all bookings for all users
-router.get("/all/getallcustbookings/", bookingsController.fetchAllBookingsAPI);
+router.get("/all/getallcustbookings/:userId", bookingsController.fetchAllBookingsAPI);
+
+// Book a service 
+router.post("/all/bookService", bookingsController.bookService);
 
 module.exports = router;

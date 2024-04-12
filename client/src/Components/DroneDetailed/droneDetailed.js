@@ -24,8 +24,9 @@ import { addDays } from 'date-fns';
 const SelectedDroneDetails = (props) => {
   const [value, setValue] = React.useState([null, null]);
   const [duration, setDuration] = React.useState(0);
-  console.log("Drone:", props.drone);
-  console.log("farmLand:", props.farmLand);
+  console.log("Props:", props);
+  console.log("Drone:", props.provider);
+  console.log("farmLand:", props.service);
   const [state, setState] = React.useState([
     {
       startDate: new Date(),
@@ -85,44 +86,7 @@ const SelectedDroneDetails = (props) => {
 />;
         </LocalizationProvider>
       </div>
-
       <div>
-        {/* <table className="dronedetails">
-          {/* <tr>
-            <td>
-              <Typography /*fontWeight={3} mt={-3} ml={0} align="top">
-                {" "}
-                <b>Location : </b>{" "}
-              </Typography>
-            </td>
-          </tr>
-          <tr>
-            <td style={{align:"top"}}>
-              <b>farm:</b>
-            </td>
-            <td>
-              <Typography align="bottom" ml="5px" mt={0.2}>
-                {props.farmLand.location}
-              </Typography>
-              <Typography align=" left" ml="5px">
-                {props.farmLand.title} : {props.farmLand.category}{" "}
-              </Typography>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <b> Service : </b>
-            </td>
-            <td>
-              <Typography align="bottom" ml="5px" mt={0.2}>
-                {props.drone.service}
-              </Typography>
-            </td>
-          </tr>
-          {/* <div className="loc">{farmLand.location}</div>
-          <div>
-            {farmLand.title} : {farmLand.category} */}
-        {/*</table> */}
         <Box
           display="flex"
           border="1px solid grey"
@@ -133,21 +97,21 @@ const SelectedDroneDetails = (props) => {
           padding={2}
         >
           <Typography align="left" fontWeight="lightweight">
-            <b>Farm : </b> {props.farmLand.location}
+            <b>Location : </b> {props.provider.serviceProvider.address}
           </Typography>
           <Typography align="left">
             {" "}
-            <b>FarmLand : </b>
-            {props.farmLand.title} - {props.farmLand.category}{" "}
+            <b>Service Details : </b>
+            {props.provider.service.serviceName} - {props.provider.serviceType.serviceType}{" "}
           </Typography>
           <Typography align="left">
             {" "}
-            <b>Service : </b>
-            {props.drone.service}
+            <b>Service Provider : </b>
+            {props.provider.serviceProvider.fullname}
           </Typography>
           <Typography align="left">
             {" "}
-            <b>Rental : </b>by date
+            <b>Appointment date : </b>by date
           </Typography>
           <Typography align="left">
             {" "}

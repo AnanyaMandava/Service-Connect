@@ -1,14 +1,14 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import List from "@mui/material/List";
+// import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
-import CommentIcon from "@mui/icons-material/Comment";
+// import ListItemText from "@mui/material/ListItemText";
+// import Checkbox from "@mui/material/Checkbox";
+// import IconButton from "@mui/material/IconButton";
+// import CommentIcon from "@mui/icons-material/Comment";
 import ImageListItem from "@mui/material/ImageListItem";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -22,7 +22,7 @@ import plumbing from "../../Assets/plumbing.webp";
 import repairs from "../../Assets/repairs.webp";
 import saloon from "../../Assets/saloon.webp";
 import "./StepOneImageListBlock.css";
-import { height } from "@mui/system";
+// import { height } from "@mui/system";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -35,9 +35,9 @@ const Item = styled(Paper)(({ theme }) => ({
 const StepOneImageListBlock = (props) => {
   const [checked, setChecked] = React.useState([]);
 
-  const formLands = [
+  const services = [
     {
-      title: "Cleaning",
+      title: "Cleaning and Organizational Services",
       category: "At-Home sevice",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
       image: cleaning,
@@ -45,7 +45,7 @@ const StepOneImageListBlock = (props) => {
     },
 
     {
-      title: "Painting",
+      title: "Health and Wellness Services",
       category: "At-Home service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
       image: painting,
@@ -53,7 +53,7 @@ const StepOneImageListBlock = (props) => {
       //     "http://www.encyclopediaofukraine.com/pic%5CA%5CP%5CApple%20orchard%20in%20Kyiv%20oblast.jpg",
     },
     {
-      title: "Plubming",
+      title: "Pet Services",
       category: "At-Home service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
       image: plumbing,
@@ -62,7 +62,7 @@ const StepOneImageListBlock = (props) => {
     },
 
     {
-      title: "Home Repairs",
+      title: "Home Maintenance and Repair Services",
       category: "At-Home service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
       image: repairs,
@@ -70,7 +70,7 @@ const StepOneImageListBlock = (props) => {
       // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
     },
     {
-      title: "Saloon Services",
+      title: "Beauty and Personal Grooming Services",
       category: "At-Home/Studio service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
       image: saloon,
@@ -78,7 +78,7 @@ const StepOneImageListBlock = (props) => {
       // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
     },
     {
-      title: "Driving",
+      title: "Food and Beverage Services",
       category: "External Service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
      image: driving,
@@ -86,7 +86,7 @@ const StepOneImageListBlock = (props) => {
       // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
     },
     {
-      title: "Gym Trainer",
+      title: "Gardening and Landscaping Services",
       category: "At-Home/External service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
       image: gym,
@@ -94,7 +94,7 @@ const StepOneImageListBlock = (props) => {
       // "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm.jpg",
     },
     {
-      title: "Packing and Moving",
+      title: "Educational and Entertainment Services",
       category: "External service",
       location: "2237 Old Toll Road, Mariposa CA 95195338",
       image: packing,
@@ -104,19 +104,15 @@ const StepOneImageListBlock = (props) => {
   ];
 
   const handleItemSelection = (value, index) => () => {
-    console.log("Handling the selected formland", index);
     const newChecked = [];
-
     newChecked.push(index);
-
     setChecked(newChecked);
-    props.setSelectedFarmLand(value);
-    console.log("Saved the selected formland");
+    props.setSelectedService(value);
   };
   return (
     <Box sx={{ width: "100%" }}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        {formLands.map((value, index) => {
+        {services.map((value, index) => {
           return (
             <Grid item xs={3} key={index}>
               <Item>
@@ -132,23 +128,14 @@ const StepOneImageListBlock = (props) => {
                         checked={checked.indexOf(index) !== -1}
                         tabIndex={-1}
                         disableRipple
-                        // inputProps={{ 'aria-labelledby': labelId }}
                       />
                     </ListItemIcon>
                     <ImageListItem key={index}>
                       <img
                         src={`${value.image}?w=120&h=120`}
                         className="farmlandimages"
-                        // srcSet={require("../../Assets/crop.jpg")}
-                        // src={
-                        //   "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm-280x720.jpg"
-                        // }
-                        // srcSet={
-                        //   "https://blog.taxact.com/wp-content/uploads/TXA200201-FebBlogs-Farm-150*150.jpg?w=150&h=150"
-                        // }
                         width="5px"
                         alt={" "}
-                        // loading="lazy"
                       />
                     </ImageListItem>
                   </ListItemButton>
