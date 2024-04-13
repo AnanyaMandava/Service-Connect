@@ -1,6 +1,9 @@
 import React from 'react';
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 function BasicTable({ rows, search }) {
+    const timeZone = 'America/Los_Angeles'; // PDT timezone
+
     const filteredRows = rows.filter((row) =>
         row.service.serviceName.toLowerCase().includes(search.toLowerCase())
     );
@@ -21,7 +24,7 @@ function BasicTable({ rows, search }) {
                         <td>{row.service.serviceName}</td>
                         <td>{row.serviceType.serviceType}</td>
                         <td>{row.serviceProvider.fullname}</td>
-                        <td>{row.bookingDate}</td>
+                        <td>{row.bookingDate.toLocaleDateString()}</td>
                     </tr>
                 ))}
             </tbody>

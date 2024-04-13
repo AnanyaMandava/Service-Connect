@@ -25,6 +25,11 @@ const Step5 = (props) => {
     return [date.getFullYear(), mnth, day].join("-");
   }
 
+  console.log("Provider Data:", providerSelected);
+  console.log("Service Data:", selectedService);
+  console.log("dateRange Data:", dateRange);
+
+
   const [bookingData,setBookingData]=useState();
   useEffect(() => {
     console.log(localStorage.getItem('userId'), providerSelected.serviceProvider._id, selectedService._id, providerSelected.serviceType._id, dateRange[0], providerSelected.price);
@@ -33,11 +38,8 @@ const Step5 = (props) => {
       serviceProviderId: providerSelected.serviceProvider._id,
       serviceId: providerSelected.service._id,
       serviceTypeId: providerSelected.serviceType._id,
-      bookedDate: dateRange[0],
-      startTime: "10:00", // Replace with actual start time
-      endTime: "17:00", // Replace with actual end time
-      TotalAmount: providerSelected.price,
-      status: "Upcoming",
+      bookedDateTime: dateRange[0].toISOString(),
+      totalAmount: providerSelected.price,
     };
 
     axios

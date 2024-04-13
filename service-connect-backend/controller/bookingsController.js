@@ -1,4 +1,6 @@
 const bookingsData = require("../Models/bookingSchema");
+const moment = require('moment-timezone');
+
 
 exports.fetchBookingsAPI = async (req, res) => {
     try {
@@ -42,24 +44,36 @@ exports.fetchAllBookingsAPI = async (req, res) => {
 
 
 exports.bookService = async (req, res) => {
-    const { userId, serviceProviderId, serviceId, serviceTypeId, bookedDate, startTime, endTime, totalAmount, status } = req.body;
+    const { userId, serviceProviderId, serviceId, serviceTypeId, bookedDateTime, totalAmount } = req.body;
 
     const newBooking = new bookingsData({
         user: userId,
         serviceProvider: serviceProviderId,
         service: serviceId,
         serviceType: serviceTypeId,
-        bookingDate: new Date(bookedDate),
-        startTime: new Date(`${bookedDate}T${startTime}`),
-        endTime: new Date(`${bookedDate}T${endTime}`),
-        totalAmount: totalAmount, // You may adjust this as needed
-        paymentStatus: "Pending", // You may adjust this as needed
-        status: status
+        bookingDate: bookedDateTime, // converts moment back to JS Date object for MongoDB
+        totalAmount: totalAmount,
+        paymentStatus: "Pending",
+        status: "Upcoming"
     });
 
     try {
-        await newBooking.save();
-        res.status(201).json({ message: "Booking successful!", booking: newBooking });
+        // Save the booking
+        const savedBooking = await newBooking.save();
+
+        // Fetch the booking with necessary fields populated
+        const populatedBooking = await bookingsData.findById(savedBooking._id)
+            .populate('user')  // Example fields to populate from the user
+            .populate('serviceProvider')  // Example fields from serviceProvider
+            .populate('service')  // Example fields from service
+            .populate('serviceType');  // Example fields from serviceType
+
+        if (!populatedBooking) {
+            return res.status(404).json({ message: 'Booking not found after save' });
+        }
+
+        // Send the populated booking as a response
+        res.status(201).json({ message: "Booking successful!", booking: populatedBooking });
     } catch (error) {
         console.error('Error saving booking:', error);
         res.status(500).json({ error: 'An error occurred while saving booking', details: error });

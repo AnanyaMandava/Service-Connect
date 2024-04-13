@@ -16,6 +16,12 @@ export default function BasicTable(props) {
     console.log(row.id)
     // props.detailedBooking(row)
     }
+
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleString(); // Converts to local timezone and formats as string
+    };
+
   return (
     <Paper sx={{ width: '100%', overflow: 'scroll' }}>
     <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
@@ -53,7 +59,7 @@ export default function BasicTable(props) {
               <TableCell align="left">{row.service.serviceName}</TableCell>
               <TableCell align="left">{row.serviceType.serviceType}</TableCell>
               <TableCell align="left">{row.serviceProvider.fullname}</TableCell>
-              <TableCell align="left">{row.bookingDate}</TableCell>
+              <TableCell align="left">{formatDate(row.bookingDate)}</TableCell>
               <TableCell align="left">{row.paymentStatus}</TableCell>
               <TableCell align="left">{
               row.status=="Active"? <span className='ActiveStatus'>{row.status}</span> : row.status=="completed" ?<span className='FinishedStatus'>{row.status}</span>:<span className='NotActiveStatus'>{row.status}</span>

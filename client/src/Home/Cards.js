@@ -11,14 +11,14 @@ export default function Cards() {
   const [overview,setOverview]=React.useState();
   
 React.useEffect(()=>{
-  const auth = JSON.parse(localStorage.getItem("auth"));
-  const url='http://localhost:8080/agriDrone/getAllCustomerBookings/'+auth.loginjson[0].userName;
-  axios.get(url).then((res)=>{
+    const userId = localStorage.getItem('userId');
+    console.log("userId:", userId);
+    axios.get(`http://localhost:3001/all/getallcustbookings/${userId}`).then((res) => {
     let active=0;
     let total=0;
     res.data.map((x)=>{
       total++;
-      if(x.status=="active"){
+      if(x.status==="Upcoming"){
         active=active+1;
       }
     })  

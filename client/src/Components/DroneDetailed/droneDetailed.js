@@ -11,7 +11,7 @@ const SelectedDroneDetails = (props) => {
   const [startTime, setStartTime] = React.useState(new Date());
   const [endTime, setEndTime] = React.useState(() => {
     let time = new Date();
-    time.setHours(time.getHours() + 2); // Default to two hours later
+    time.setHours(time.getHours() + (props.provider.serviceType.duration)); // Default to two hours later
     return time;
   });
 
@@ -20,7 +20,7 @@ const SelectedDroneDetails = (props) => {
     const updatedDate = new Date(newDate.$d);
     // Use the same day but keep the existing time of the day from startTime
     const startDateTime = new Date(updatedDate.setHours(startTime.getHours(), startTime.getMinutes()));
-    const endDateTime = new Date(startDateTime.getTime() + 2 * 3600 * 1000); // +2 hours
+    const endDateTime = new Date(startDateTime.getTime() + (props.provider.serviceType.duration) * 3600 * 1000); // +2 hours
 
     setSelectedDate(updatedDate);
     setStartTime(startDateTime);
@@ -40,7 +40,7 @@ const SelectedDroneDetails = (props) => {
       updatedStartTime.getHours(),
       updatedStartTime.getMinutes()
     );
-    const adjustedEndTime = new Date(adjustedStartTime.getTime() + 2 * 3600 * 1000); // +2 hours
+    const adjustedEndTime = new Date(adjustedStartTime.getTime() + (props.provider.serviceType.duration) * 3600 * 1000); // +2 hours
 
     setStartTime(adjustedStartTime);
     setEndTime(adjustedEndTime);
@@ -84,6 +84,7 @@ const SelectedDroneDetails = (props) => {
         <Typography>{`Provider: ${props.provider.serviceProvider.fullname}`}</Typography>
         <Typography>{`Date: ${selectedDate.toLocaleDateString()}`}</Typography>
         <Typography>{`Time: ${startTime.toLocaleTimeString()} to ${endTime.toLocaleTimeString()}`}</Typography>
+        <Typography>{`Duration: ${props.provider.serviceType.duration} hours`}</Typography>
         {/* <Button variant="outlined" startIcon={<img src={img1} alt="Add" />}>
           Add a Flight Time
         </Button> */}
