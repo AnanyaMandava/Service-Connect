@@ -8,14 +8,25 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import SearchIcon from "@mui/icons-material/Search";
 import "../../MyBookings/DetailedBooking.css";
 import * as moment from 'moment';
+import { LocalizationProvider, StaticDateTimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 
 const Step3 = (props) => {
   // here we will have all the data in props to display in the page
   // need to add th html tags
   // refer to the stepCoreContent.js file for the props name used.
+
   console.log("Step3: Props:", props);
+  // console.log("Date Range in Step3:", dateRange);  // Check what is actually being received
+
   console.log(props.providerSelected, props.selectedService);
+  const { providerSelected, dateRange } = props;
+
   const value = props.providerSelected;
+   const startDate = new Date(dateRange[0]).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+  const endDate = new Date(dateRange[1]).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+
   // const farmLand = props.selectedService;
   return (
     <div>
@@ -97,8 +108,8 @@ const Step3 = (props) => {
         </div>
         <Typography fontWeight={3} mt={2} ml={"-80.5%"}>
           {console.log(new Date(props.dateRange[0]))}
-          <b>Start Date & Time :</b> {(new Date(props.dateRange[0]) +" ").replace("00:00:00 GMT-0800 (Pacific Standard Time)","")}
-         <br></br> <b>End Date & Time :</b> {(new Date(props.dateRange[1]) +" ").replace("00:00:00 GMT-0800 (Pacific Standard Time)","")}
+          <b>Start Date & Time :</b> {startDate}
+         <br></br> <b>End Date & Time :</b> {endDate}
         </Typography>
 
         <div className="loc-s3">

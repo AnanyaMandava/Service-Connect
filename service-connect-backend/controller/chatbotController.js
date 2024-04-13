@@ -64,7 +64,7 @@ const detectIntent = async (msg) => {
     let intent = [];
     intent.push({
         role: "system",
-        content: "You are here to detect intent of the user, If the user wants to book an appointment you reply with 'NEW_BOOKING' only, If the user wants to select a particular option you must respond with 'OPTION' only, If the user is providing you with the date and time you must respond with DATETIMESELECTION only, If the user wants to view his bookings can you respond back with SHOW, else reply with 'UNRELATED' only"
+        content: "You are here to detect intent of the user, If the user wants to book an appointment you reply with 'NEW_BOOKING' only, If the user wants to select a particular option with either a number or a name from the list you must respond with 'OPTION' only, If the user is providing you with the date and time you must respond with DATETIMESELECTION only, If the user wants to view his bookings can you respond back with SHOW, else reply with 'UNRELATED' only"
     });
     intent.push({
         role: "user",
@@ -95,7 +95,7 @@ const detectOptionSelection = async (msg,list) => {
     let intent = [];
     intent.push({
         role: "system",
-        content: "You are here to detect option selection of the user, The user can select the option based on its related number or its name, from the provided list you must respond back with its name only, else respond with OOPS only. Following is the provided list: "+list
+        ontent: "You are here to detect option selection of the user, The user can select the option based on its related number or its name, from the provided list you must respond back with its name only, else respond with OOPS only. Following is the provided list: "+list
     });
     intent.push({
         role: "user",
@@ -126,7 +126,7 @@ const detectDateAndTime = async (msg) => {
     let intent = [];
     intent.push({
         role: "system",
-        content: "You are here to detect date and time properly from the user, you must respond back three items the first item is the detected date in the following format YYYY-MM-DD, second item is the detected time in the following format only HH:MM:SS, third item is the detected time added with 1 hour time in this format only HH:MM:SS. In essence you must respond back the required items in this format only: YYYY-MM-DD HH:MM:SS HH:MM:SS"
+        content: "You are here to detect date and time properly from the user, you must respond back three items the first item is the detected date in the following format YYYY-MM-DD, second item is the detected time in the following format only HH:MM:SS, third item is the detected time added with 1 hour time in this format only HH:MM:SS. In essence you must respond back the required items in this format only: YYYY-MM-DD HH:MM:SS HH:MM:SS and note that user can also respond with names of the days, please respond and return accordingly. the time here should be in PST."
     });
     intent.push({
         role: "user",
@@ -348,18 +348,18 @@ exports.chatHandler = async (req, res) => {
             console.log("Split time details:", selected_timings.split(" "));
             console.log("Service ID, Service Type ID, User ID, Service Provider ID", b_service_id, b_service_type_id, req.body.userId, b_service_provider_id);
             console.log("Start Time", new Date(`${bookedDate}T${startTime}`));
-            console.log("End Time", new Date(`${bookedDate}T${endTime}`));
-            const newBooking = new Booking({
-                user: req.body.userId, // Assuming userId is available in req.body
-                serviceProvider: b_service_provider_id, // Assuming selected_provider is available
-                service: b_service_id, // Assuming selected_service is available
-                serviceType: b_service_type_id, // Assuming selected_type is available
-                bookingDate: new Date(bookedDate),
-                startTime: new Date(`${bookedDate}T${startTime}`),
-                endTime: new Date(`${bookedDate}T${endTime}`),
-                totalAmount: 0, // You may adjust this as needed
-                paymentStatus: "Pending" // You may adjust this as needed
-            });
+                //console.log("End Time", new Date(`${bookedDate}T${endTime}`));
+                const newBooking = new Booking({
+                    user: req.body.userId, // Assuming userId is available in req.body
+                    serviceProvider: b_service_provider_id, // Assuming selected_provider is available
+                    service: b_service_id, // Assuming selected_service is available
+                    serviceType: b_service_type_id, // Assuming selected_type is available
+                    bookingDate: new Date(`${bookedDate}T${startTime}`),
+                    // startTime: startTime,
+                    // endTime: endTime,
+                    totalAmount: 0, // You may adjust this as needed
+                    paymentStatus: "Pending" // You may adjust this as needed
+                });
     
             try {
                 await newBooking.save();

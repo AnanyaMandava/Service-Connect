@@ -1,150 +1,93 @@
-// import { React } from 'react';
-
-import { Button, Typography } from "@mui/material";
-// import { Box } from "@mui/system";
-import StepOneImageListBlock from "../StepOneImageListBlock/StepOneImageListBlock";
-import DroneCatelog from "../DroneCatelog/droneCatelog";
 import * as React from "react";
-import * as moment from 'moment';
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import { LocalizationProvider } from "@mui/x-date-pickers-pro";
-import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-// import { DateRangePicker } from "@mui/x-date-pickers-pro";
-// import { StaticDateRangePicker } from "@mui/x-date-pickers-pro/StaticDateRangePicker";
-// import DroneCalendarDetails from "./droneCalendar";
-import SelectedDroneDetailsFlight from "./SelectedDroneDetailsFlight";
+import { Typography, Button, TextField, Box } from "@mui/material";
+import { LocalizationProvider, StaticDatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import "./droneDetailed.css";
 import img1 from "../../Assets/plus.png";
-import { blue } from "@mui/material/colors";
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file 
-import { DateRangePicker } from 'react-date-range';
-import { addDays } from 'date-fns';
+
 const SelectedDroneDetails = (props) => {
-  const [value, setValue] = React.useState([null, null]);
-  const [duration, setDuration] = React.useState(0);
-  console.log("Props:", props);
-  console.log("Drone:", props.provider);
-  console.log("farmLand:", props.service);
-  const [state, setState] = React.useState([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 7),
-      
-      key: 'selection'
-    }
-  ]);
-  //   console.log(value[1].$D - value[0].$D);
-  const handleDuration = (item) => {
-   
-    console.log("start date "+item.startDate);
-    console.log("end date "+item.endDate);
-    // if (value[1]) {
-    //   const temp = value[1].$D - value[0].$D;
-    //   setDuration(temp);
-    //   console.log(temp);
-    // }
-    if(item && item.startDate && item.endDate)
-    {setValue([item.startDate,item.endDate]);
-      
-      var start = moment(item.startDate, "YYYY-MM-DD");
-      var end = moment(item.endDate, "YYYY-MM-DD");
-      props.handleDateRange([item.startDate,item.endDate])
-        //Difference in number of days
-        setDuration(moment.duration(end.diff(start)).asDays()+1);
-    }
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [startTime, setStartTime] = React.useState(new Date());
+  const [endTime, setEndTime] = React.useState(() => {
+    let time = new Date();
+    time.setHours(time.getHours() + 2); // Default to two hours later
+    return time;
+  });
+
+  //Handler for changing date
+  const handleDateChange = (newDate) => {
+    const updatedDate = new Date(newDate.$d);
+    // Use the same day but keep the existing time of the day from startTime
+    const startDateTime = new Date(updatedDate.setHours(startTime.getHours(), startTime.getMinutes()));
+    const endDateTime = new Date(startDateTime.getTime() + 2 * 3600 * 1000); // +2 hours
+
+    setSelectedDate(updatedDate);
+    setStartTime(startDateTime);
+    setEndTime(endDateTime);
+
+    props.handleDateRange([startDateTime, endDateTime]);
   };
+
+  // Handler for changing start time
+  const handleStartTimeChange = (newTime) => {
+    const updatedStartTime = new Date(newTime.$d);
+    // Ensure the date part is still the selected date but time is updated
+    const adjustedStartTime = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      updatedStartTime.getHours(),
+      updatedStartTime.getMinutes()
+    );
+    const adjustedEndTime = new Date(adjustedStartTime.getTime() + 2 * 3600 * 1000); // +2 hours
+
+    setStartTime(adjustedStartTime);
+    setEndTime(adjustedEndTime);
+
+    props.handleDateRange([adjustedStartTime, adjustedEndTime]);
+  };
+
   return (
     <div className="roDrone">
-      <div className="daterangecal">
-        <LocalizationProvider
-          dateAdapter={AdapterDayjs}
-          localeText={{ start: "Start", end: "End" }}
-        >
-          {/* <StaticDateRangePicker
-            value={value}
-            onChange={(newValue) => {
-              handleDuration(newValue);
-            }}
-            renderInput={(startProps, endProps) => (
-              <React.Fragment>
-                <TextField {...startProps} />
-                <Box sx={{ mx: 2, backgroundColor: blue }}> to </Box>
-                <TextField {...endProps} />
-              </React.Fragment>
-            )}
-          /> */}
-          <DateRangePicker
-  onChange={item => {setState([item.selection]);handleDuration(item.selection)}}
-  showSelectionPreview={true}
-  moveRangeOnFirstSelection={false}
-  months={1}
-  ranges={state}
-  minDate={new Date()}
-  direction="horizontal"
-/>;
-        </LocalizationProvider>
-      </div>
-      <div>
-        <Box
-          display="flex"
-          border="1px solid grey"
-          borderRadius={1}
-          marginTop={10}
-          marginLeft={10}
-          flexDirection="column"
-          padding={2}
-        >
-          <Typography align="left" fontWeight="lightweight">
-            <b>Location : </b> {props.provider.serviceProvider.address}
-          </Typography>
-          <Typography align="left">
-            {" "}
-            <b>Service Details : </b>
-            {props.provider.service.serviceName} - {props.provider.serviceType.serviceType}{" "}
-          </Typography>
-          <Typography align="left">
-            {" "}
-            <b>Service Provider : </b>
-            {props.provider.serviceProvider.fullname}
-          </Typography>
-          <Typography align="left">
-            {" "}
-            <b>Appointment date : </b>by date
-          </Typography>
-          <Typography align="left">
-            {" "}
-            <b>Duration : </b>
-            {duration}
-          </Typography>
-          <Box flexDirection={"column"}>
-            <Typography align="left">
-              {" "}
-              <b>Flight times per day :</b>
-            </Typography>
-            <Box display="flex" flexDirection="row">
-              <TextField sx={{ mt: "12px" }} label="Time" />
-              <Button>Delete</Button>
-              <Button>
-                <Box
-                  display="flex"
-                  border="1px solid grey"
-                  borderRadius={1}
-                  p={1}
-                  backgroungColor="white"
-                  flexDirection="column"
-                  width={170}
-                  //   marginTop={}
-                >
-                  <Typography align="start">Add a flight Time</Typography>
-                  <img src={img1} width="20%" height="20%" align="center" />
-                </Box>
-              </Button>
-            </Box>
+      <Box className="daterangecal">
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Box sx={{ mb: 2 }}>
+            <StaticDatePicker
+              displayStaticWrapperAs="desktop"
+              openTo="day"
+              value={selectedDate}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
           </Box>
-        </Box>
-      </div>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <TimePicker
+              label="Start Time"
+              value={startTime}
+              onChange={handleStartTimeChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <TimePicker
+              label="End Time"
+              value={endTime}
+              readOnly
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </Box>
+        </LocalizationProvider>
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', ml: 4 }}>
+        <Typography variant="h6">Service Details:</Typography>
+        <Typography>{`Location: ${props.provider.serviceProvider.address}`}</Typography>
+        <Typography>{`Service: ${props.provider.service.serviceName} - ${props.provider.serviceType.serviceType}`}</Typography>
+        <Typography>{`Provider: ${props.provider.serviceProvider.fullname}`}</Typography>
+        <Typography>{`Date: ${selectedDate.toLocaleDateString()}`}</Typography>
+        <Typography>{`Time: ${startTime.toLocaleTimeString()} to ${endTime.toLocaleTimeString()}`}</Typography>
+        {/* <Button variant="outlined" startIcon={<img src={img1} alt="Add" />}>
+          Add a Flight Time
+        </Button> */}
+      </Box>
     </div>
   );
 };
