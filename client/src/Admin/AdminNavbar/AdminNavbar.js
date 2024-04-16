@@ -9,7 +9,7 @@ function AdminNavbar (props) {
     <div className='adminNav'>
         <div className='navContents'>
             <span className='navLinks' onClick={()=>navigate('/adminhome')}>Home</span>
-            <span className='navLinks'> Contact</span>
+            {/* <span className='navLinks'> Contact</span> */}
             <span className='navLinks' onClick={()=>{props.changeLoginStatus(false)}}> Logout</span>
         </div>
     </div>

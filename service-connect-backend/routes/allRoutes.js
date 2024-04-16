@@ -60,12 +60,24 @@ router.post('/all/addserviceprovider', serviceProviderController.addServiceProvi
 router.get('/all/getspsearchrecords', serviceProviderController.getRecords);
 
 // Get all bookings for an user
-router.get("/all/getcustbookings/:userId", bookingsController.fetchBookingsAPI);
+router.get("/all/getcustbookings/:serviceProviderId", bookingsController.fetchBookingsAPI);
 
 // Get all bookings for all users
 router.get("/all/getallcustbookings/:userId", bookingsController.fetchAllBookingsAPI);
 
+// Get NExt booking Date
+router.get("/all/getnextbooking/:userId", bookingsController.getNextBooking);
+
 // Book a service 
 router.post("/all/bookService", bookingsController.bookService);
+
+// Fetch Active Bookings
+router.get("/all/getActiveSPBookings/:serviceProviderId", bookingsController.getActiveBookings);
+
+// Fetch Completed Bookings
+router.get("/all/getCompletedBookings/:serviceProviderId", bookingsController.getCompletedBookings);
+
+// Update Booking Status
+router.patch('/all/updateBookingStatus/:id', bookingsController.updateBookingStatus);
 
 module.exports = router;

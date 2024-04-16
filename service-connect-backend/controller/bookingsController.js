@@ -1,17 +1,16 @@
 const bookingsData = require("../Models/bookingSchema");
 const moment = require('moment-timezone');
 
-
 exports.fetchBookingsAPI = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const serviceProviderId = req.params.serviceProviderId;
 
-        // Query bookings for the specified user and populate related fields
-        const bookings = await bookingsData.find({ user: userId })
-            .populate('user', 'fullname') // Populate the 'user' field and select 'username' only
-            .populate('service', 'serviceName') // Populate the 'service' field and select 'serviceName' only
-            .populate('serviceType', 'serviceType') // Populate the 'serviceType' field and select 'serviceType' only
-            .populate('serviceProvider', 'fullname'); // Populate the 'serviceProvider' field and select 'fullname' only
+        // Query bookings for the specified serviceProvider and populate related fields
+        const bookings = await bookingsData.find({ serviceProvider: serviceProviderId })
+                .populate('user', 'fullname mobile address city state zipcode')
+                .populate('service', 'serviceName')
+                .populate('serviceType', 'serviceType duration')
+                .populate('serviceProvider', 'fullname mobile address city state zipcode');
 
         // Send the retrieved bookings as a response
         res.status(200).json(bookings);
@@ -21,7 +20,6 @@ exports.fetchBookingsAPI = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
-
 exports.fetchAllBookingsAPI = async (req, res) => {
     try {
         const userId = req.params.userId; // Get userId from the request parameters
@@ -77,5 +75,101 @@ exports.bookService = async (req, res) => {
     } catch (error) {
         console.error('Error saving booking:', error);
         res.status(500).json({ error: 'An error occurred while saving booking', details: error });
+    }
+};
+
+exports.getNextBooking = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const now = new Date();
+        const nextBooking = await bookingsData.findOne({ user: userId, bookingDate: { $gt: now } })
+            .populate('service', 'serviceName')
+            .populate('serviceType', 'serviceType')
+            .populate('serviceProvider', 'fullname mobile address city state zipcode')
+            .sort({ bookingDate: 1 })
+            .exec();
+
+        if (nextBooking) {
+            res.status(200).json(nextBooking);
+        } else {
+            res.status(404).send('No upcoming bookings found');
+        }
+    } catch (error) {
+        console.error('Error fetching the next booking:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+exports.getActiveBookings = async (req, res) => {
+    const { serviceProviderId } = req.params;
+
+    try {
+        const bookings = await bookingsData.find({
+            serviceProvider: serviceProviderId,
+            status: { $in: ["Upcoming", "Ongoing"] } // Directly querying only "Ongoing" status
+        })
+        .populate('user', 'fullname mobile address city state zipcode')
+        .populate('service', 'serviceName')
+        .populate('serviceType', 'serviceType')
+        .populate('serviceProvider', 'fullname mobile address city state zipcode');
+
+        if (bookings.length > 0) {
+            res.status(200).json(bookings);
+        } else {
+            res.status(404).send('No ongoing bookings found');
+        }
+    } catch (error) {
+        console.error('Failed to fetch bookings:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get Completed/Cancelled Bookings
+exports.getCompletedBookings = async (req, res) => {
+    const { serviceProviderId } = req.params;
+
+    try {
+        const bookings = await bookingsData.find({
+            serviceProvider: serviceProviderId,
+            status: { $in: ["Completed", "Cancelled"] } // Directly querying only "Ongoing" status
+        })
+        .populate('user', 'fullname mobile address city state zipcode')
+        .populate('service', 'serviceName')
+        .populate('serviceType', 'serviceType')
+        .populate('serviceProvider', 'fullname mobile address city state zipcode');
+
+        if (bookings.length > 0) {
+            res.status(200).json(bookings);
+        } else {
+            res.status(404).send('No ongoing bookings found');
+        }
+    } catch (error) {
+        console.error('Failed to fetch bookings:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Update Booking Status
+
+exports.updateBookingStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    try {
+        const updatedBooking = await bookingsData.findByIdAndUpdate(
+            id,
+            { $set: { status: status } },
+            { new: true } // Return the modified document
+        );
+
+        if (!updatedBooking) {
+            return res.status(404).send('Booking not found');
+        }
+
+        res.status(200).json(updatedBooking);
+    } catch (error) {
+        console.error('Error updating booking status:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };

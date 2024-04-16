@@ -1,15 +1,15 @@
-import { Box } from "@mui/system";
+// import { Box } from "@mui/system";
 import React, { useState ,useEffect} from "react";
-import { Autocomplete, TextField, Typography } from "@mui/material";
-import SelectedDroneDetails from "../DroneDetailed/droneDetailed";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import SearchIcon from "@mui/icons-material/Search";
+import { Typography } from "@mui/material";
+// import SelectedDroneDetails from "../DroneDetailed/droneDetailed";
+// import ListItemButton from "@mui/material/ListItemButton";
+// import ListItemText from "@mui/material/ListItemText";
+// import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+// import SearchIcon from "@mui/icons-material/Search";
 import "./step5.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 
 const Step5 = (props) => {
   // here we will have all the data in props to display in the page
@@ -17,13 +17,6 @@ const Step5 = (props) => {
   // refer to the stepCoreContent.js file for the props name used.
   const { providerSelected, selectedService, dateRange } = props;
   const navigate = useNavigate();
-  const convertDate=(str)=> {
-    var date = new Date(str),
-      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-      day = ("0" + date.getDate()).slice(-2);
-      console.log("inside converter")
-    return [date.getFullYear(), mnth, day].join("-");
-  }
 
   console.log("Provider Data:", providerSelected);
   console.log("Service Data:", selectedService);
@@ -39,7 +32,7 @@ const Step5 = (props) => {
       serviceId: providerSelected.service._id,
       serviceTypeId: providerSelected.serviceType._id,
       bookedDateTime: dateRange[0].toISOString(),
-      totalAmount: providerSelected.price,
+      totalAmount: providerSelected.price + (providerSelected.price * 0.10),
     };
 
     axios
@@ -69,135 +62,6 @@ const Step5 = (props) => {
               //marginTop: "100px",
             }}
           >
-            <table style={{ position: "top" }}>
-              {/* <th>
-              <td>
-                <Typography variant="h6">Summary</Typography>
-              </td>
-            </th> */}
-              <tr>
-                <td>
-                  {/* <img
-                    src={require("../../Assets/drone.svg").default}
-                    style={{
-                      border: "1px solid grey",
-                      borderRadius: "5px",
-                      marginRight: "20px",
-                    }}
-                  ></img> */}
-                </td>
-                <Typography align="left">
-                  Service ID #{bookingData && bookingData.bookingId}, Booking ID #1{" "}
-                </Typography>
-                <Typography align="left">{bookingData &&  bookingData.brand}</Typography>
-                <tr>
-                  <td>
-                    <Typography align="right"> </Typography>
-                    <p
-                      style={{
-                        position: "left",
-                        marginTop: "0px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {" "}
-                      {selectedService.serviceName}
-                    </p>
-                    <p
-                      style={{
-                        position: "left",
-                        marginTop: "0px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {" "}
-                      {providerSelected.address}
-                    </p>
-                    <p
-                      style={{
-                        position: "left",
-                        marginTop: "0px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {" "}
-                      {providerSelected.serviceType.serviceType}
-                    </p>
-                  </td>
-                </tr>
-              </tr>
-            </table>
-          </div>
-
-          <div
-            style={{
-              display: "inline-block",
-              // marginTop: "1px",
-            }}
-          >
-            <table>
-              <tr>
-                <td>
-                  {/* <img
-                    src={require("../../Assets/mypilot.png")}
-                    style={{
-                      border: "1px solid grey",
-                      borderRadius: "5px",
-                      marginLeft: "20px",
-                      marginRight: "20px",
-                      width: "120px",
-                      marginTop: "10px",
-                    }}
-                  ></img> */}
-                </td>
-                <tr>
-                  <td style={{ marginRight: "200px" }}>
-                    <Typography align="left"> Service Provider</Typography>
-                    <p
-                      style={{
-                        position: "left",
-                        marginTop: "0px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {" "}
-                      {bookingData && bookingData.spName}
-                    </p>
-                    <p
-                      style={{
-                        position: "left",
-                        marginTop: "0px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {" "}
-                      Lisence Number : {bookingData && bookingData.spLicense}
-                    </p>
-                    <p
-                      style={{
-                        position: "left",
-                        marginTop: "0px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {" "}
-                      Phone : {bookingData && bookingData.phoneNumber}
-                    </p>
-                    <p
-                      style={{
-                        position: "left",
-                        marginTop: "0px",
-                        marginLeft: "0px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {" "}
-                     
-                    </p>
-                  </td>
-                </tr>
-              </tr>
-            </table>
           </div>
         </div>
       </div>
@@ -212,9 +76,9 @@ const Step5 = (props) => {
             {/* Drone based cost */}
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Service Base Cost
+                Service Name
               </div>
-              <div className="col-sm-2 columnBillsub">{bookingData && bookingData.droneBaseCost}</div>
+              <div className="col-sm columnBillsub">{bookingData && providerSelected.service.serviceName}</div>
               {/* <img src={require("../../Assets/Line.svg").default} /> */}
             </div>
             {/* Drone based cost */}
@@ -222,15 +86,9 @@ const Step5 = (props) => {
             {/* Flights per day */}
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Service date and time
+                Service Type
               </div>
-            </div>
-            <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">
-                1x 10:00 AM - 5:00 PM PST 
-              </div>
-              <div className="col-sm-2 columnBillsub">20</div>
-              {/* <img src={require("../..Assets/Line.svg").default} /> */}
+              <div className="col-sm columnBillsub">{bookingData && providerSelected.serviceType.serviceType} </div>
             </div>
             {/* Flights per day */}
 
@@ -238,15 +96,9 @@ const Step5 = (props) => {
 
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Hourly Service Operations Per Day
+                Service Provider 
               </div>
-            </div>
-            <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">
-                1x {bookingData && bookingData.serviceType}
-              </div>
-              <div className="col-sm-2 columnBillsub">20</div>
-              {/* <img src={require("../../Assets/Line.svg").default} /> */}
+              <div className="col-sm columnBillsub">{bookingData && providerSelected.serviceProvider.fullname} </div>
             </div>
 
             {/* Hourly Service Operations Per Day */}
@@ -255,15 +107,9 @@ const Step5 = (props) => {
 
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Service Duration
+                Phone Number 
               </div>
-            </div>
-            <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">
-              {bookingData && bookingData.serviceDuration} Day - On-Demand
-              </div>
-              <div className="col-sm-2 columnBillsub">20</div>
-              {/* <img src={require("../../Assets/Line.svg").default} /> */}
+              <div className="col-sm columnBillsub">+1 {bookingData && providerSelected.serviceProvider.mobile} </div>
             </div>
 
             {/* Service Duration */}
@@ -272,20 +118,9 @@ const Step5 = (props) => {
 
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                Total Amount
+                Address
               </div>
-            </div>
-
-            <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">
-                Payment Method
-              </div>
-              <div className="col-sm-2 columnBillsub">#4000</div>
-            </div>
-            <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">Price</div>
-              <div className="col-sm-2 columnBillsub">{bookingData && bookingData.totalPrice}</div>
-              {/* <img src={require("../../Assets/Line.svg").default} /> */}
+              <div className="col-sm columnBillsub">{bookingData && providerSelected.serviceProvider.address}, {providerSelected.serviceProvider.city}, {providerSelected.serviceProvider.state}, {providerSelected.serviceProvider.zipcode} </div>
             </div>
 
             {/* total*/}
@@ -296,14 +131,10 @@ const Step5 = (props) => {
             style={{ backgroundColor: "#E7E9EB", paddingTop: "20px" }}
           >
             <div className="row billtableRow">
-              {/* Materials */}
-
-              <div className="col-sm columnBill columnBillBold">Materials</div>
-            </div>
-            <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">(None)</div>
-              <div className="col-sm-2 columnBillsub">20</div>
-              {/* <img src={require("../../Assets/Line.svg").default} /> */}
+              <div className="col-sm columnBill columnBillBold">
+                Service Base Cost
+              </div>
+              <div className="col-sm columnBillsub">{bookingData && providerSelected.price} USD</div>
             </div>
 
             {/* Materials */}
@@ -311,13 +142,10 @@ const Step5 = (props) => {
             {/* Equipment */}
 
             <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillBold">Equipment</div>
-            </div>
-
-            <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">1x {bookingData && bookingData.equipment} </div>
-              <div className="col-sm-2 columnBillsub">20</div>
-              {/* <img src={require("../../Assets/Line.svg").default} /> */}
+              <div className="col-sm columnBill columnBillBold">
+                Service Date and Time
+              </div>
+              <div className="col-sm columnBillsub">{bookingData && dateRange[0].toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })} </div>
             </div>
 
             {/* Equipment */}
@@ -326,19 +154,27 @@ const Step5 = (props) => {
 
             <div className="row billtableRow">
               <div className="col-sm columnBill columnBillBold">
-                SP Charge
+                Service Duration
               </div>
-            </div>
-
-            <div className="row billtableRow">
-              <div className="col-sm columnBill columnBillsub">
-                
-              </div>
-              <div className="col-sm-2 columnBillsub">{bookingData && bookingData.spCharge}</div>
-              {/* <img src={require("../../Assets/Line.svg").default} /> */}
+              <div className="col-sm columnBillsub">{bookingData && providerSelected.serviceType.duration} Hours</div>
             </div>
 
             {/* SP Charge */}
+
+            <div className="row billtableRow">
+              <div className="col-sm columnBill columnBillBold">
+                Service Provider Charges (10% of Base Charge)
+              </div>
+              <div className="col-sm columnBillsub">{bookingData && (providerSelected.price * 0.10)} USD</div>
+            </div>
+
+            {/* Total Amount */}
+            <div className="row billtableRow">
+              <div className="col-sm columnBill columnBillBold">
+                Total Amount
+              </div>
+              <div className="col-sm columnBillsub">{bookingData && (providerSelected.price + (providerSelected.price * 0.10))} USD</div>
+            </div>
           </div>
         </div>
       </div>

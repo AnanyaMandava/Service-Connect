@@ -13,7 +13,7 @@ function Navbar(props) {
               Home
             </Link>
           </span>{" "}
-          <span className="navLinks">Contact</span>{" "}
+          {/* <span className="navLinks">Contact</span>{" "} */}
           <span className="navLinks">
             <Link class="nav-link" to="/Profile">
               Profile

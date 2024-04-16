@@ -23,7 +23,7 @@ const StepHeaderInformation = (props) => {
         },
         {
             head: 'Your booking is confirmed',
-            desc: 'You should receive a confirmation email shortly'
+            desc: 'Please find the booking details below'
         },
     ]
     return (

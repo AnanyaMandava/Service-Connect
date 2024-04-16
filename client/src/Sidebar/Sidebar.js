@@ -1,4 +1,4 @@
-import React, { Component, useState} from 'react';
+import React, { useState} from 'react';
 import './Sidebar.css'
 //import { ReactComponent as DashSvg } from './../Assets/Vector/svg1.svg';
 import { Link } from "react-router-dom";
@@ -42,14 +42,14 @@ function Sidebar(props) {
                 <img src={require('./../Assets/arrow.svg').default} alt='mySvgImage' />
                 </span>
 
-                <span className={tab==="service"?'span-li span-li-colored':'span-li '} id="service" onClick={()=>{changeColor("service")}}>
+                {/* <span className={tab==="service"?'span-li span-li-colored':'span-li '} id="service" onClick={()=>{changeColor("service")}}>
 
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />
                     <span className='li-span'><Link class="nav-link" to="/service">Service Report</Link></span>
 
                 </li>
                 <img src={require('./../Assets/arrow.svg').default} alt='mySvgImage' />
-                </span>
+                </span> */}
                 <span className={tab==="profile"?'span-li span-li-colored':'span-li '} id="profile" onClick={()=>{changeColor("profile")}}>
 
                 <li className='li-dashboard'><img src={require('./../Assets/maintain.svg').default} alt='mySvgImage' />

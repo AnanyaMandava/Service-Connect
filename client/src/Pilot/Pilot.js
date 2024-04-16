@@ -29,10 +29,10 @@ function SP() {
         <div className="col-sm chips">
           <div className="row chips-row">
      
-            <div className='col-sm'><button className='button' onClick={()=>{ navigate("/Schedule")}}>Edit Schedule</button></div>
-            <div className='col-sm'><button className='button' onClick={()=>{ navigate("/PilotBooking")}} >View Active Bookings</button></div>
-            <div className='col-sm'><button className='button' onClick={()=>{ navigate("/PilotBooking?Status=completed")}} >View Completed Bookings</button></div>
-            <div className='col-sm'><button className='button' >Edit Profile</button></div>
+            <div className='col-sm'><button className='button' onClick={()=>{ navigate("/pilot")}}>Add Service</button></div>
+            <div className='col-sm'><button className='button' onClick={()=>{ navigate("/PilotBooking")}} >View Upcoming/Ongoing Bookings</button></div>
+            <div className='col-sm'><button className='button' onClick={()=>{ navigate("/CompleteBooking")}} >View Completed Bookings</button></div>
+            <div className='col-sm'><button className='button' onClick={()=>{ navigate("/Schedule")}} >View Availability</button></div>
             
           </div>
           

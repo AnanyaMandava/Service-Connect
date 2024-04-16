@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import BasicTable from '../Table1';
+import BasicTable from '../Table2';
 import './PilotBookings.css';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-function SPBookings() {
+function CompBookings() {
   const navigate = useNavigate();
   const [bookingData, setBookingData] = useState([]);
   const [showSpinner, setShowSpinner] = useState(true);
 
   useEffect(() => {
     const serviceProviderId = localStorage.getItem('userId');
-    const url = `http://localhost:3001/all/getActiveSPBookings/${serviceProviderId}`;
+    const url = `http://localhost:3001/all/getCompletedBookings/${serviceProviderId}`;
     axios.get(url).then(res => {
       setBookingData(res.data);
       setShowSpinner(false);
@@ -23,21 +23,12 @@ function SPBookings() {
     });
   }, []);
 
-  const handleStatusChange = (id, newStatus) => {
-    axios.patch(`http://localhost:3001/all/updateBookingStatus/${id}`, { status: newStatus })
-      .then(() => {
-        const updatedData = bookingData.map(item => item._id === id ? { ...item, status: newStatus } : item);
-        setBookingData(updatedData);
-      })
-      .catch(error => console.error('Error updating booking status:', error));
-  };
-
   return (
     <div className='container-fluid bookDrone'>
       <div className='row bookDroneTable'>
         {showSpinner && <Box sx={{ display: 'flex', justifyContent: 'center' }}><CircularProgress /></Box>}
         {!showSpinner && (
-          <BasicTable rows={bookingData} handleStatusChange={handleStatusChange} />
+          <BasicTable rows={bookingData} />
         )}
       </div>
       <div className='row'>
@@ -47,4 +38,4 @@ function SPBookings() {
   );
 }
 
-export default SPBookings;
+export default CompBookings;
