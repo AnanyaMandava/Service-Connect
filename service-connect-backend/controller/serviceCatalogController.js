@@ -52,4 +52,64 @@ exports.getRecords = async (req, res) => {
 };
 
 
-  
+// Fetch records based on Id
+
+exports.getServiceProviderRecords = async (req, res) => {
+    try {
+        const { serviceProviderId } = req.params;
+        const serviceProviders = await serviceCatalog.find({
+            serviceProvider: serviceProviderId
+        })
+        .populate('service')
+        .populate('serviceType')
+        .populate({
+            path: 'serviceProvider',
+            select: 'fullname email mobile address city state zipcode' // Select the fields you need
+        });
+
+        res.json(serviceProviders);
+    } catch (error) {
+        console.error("Error fetching service providers:", error);
+        res.status(500).send('Server error');
+    }
+};
+
+
+// Update the Service Provider Record  (Price and Desc)
+
+exports.updateServiceProvider = async (req, res) => {
+
+    const { id } = req.params;
+    const { price, description } = req.body;
+    
+    try {
+        const updatedEntry = await serviceCatalog.findByIdAndUpdate(id, {
+            price, description
+        }, { new: true }).populate('service').populate('serviceType').populate('serviceProvider');
+        
+        if (!updatedEntry) {
+            return res.status(404).json({ message: 'Service catalog entry not found' });
+        }
+        res.status(200).json(updatedEntry);
+    } catch (error) {
+        console.error('Failed to update service catalog entry:', error);
+        res.status(500).json({ message: 'Error updating service catalog entry' });
+    }
+};
+
+// Delete the service Provider record
+
+exports.deleteServiceProvider = async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        const deletedEntry = await serviceCatalog.findByIdAndDelete(id);
+        if (!deletedEntry) {
+            return res.status(404).json({ message: 'Service catalog entry not found' });
+        }
+        res.status(200).json({ message: 'Service catalog entry deleted successfully' });
+    } catch (error) {
+        console.error('Failed to delete service catalog entry:', error);
+        res.status(500).json({ message: 'Error deleting service catalog entry' });
+    }
+};

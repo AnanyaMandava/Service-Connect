@@ -50,6 +50,9 @@ router.get("/all/getservicetype/:serviceName", serviceTypeController.getServiceT
 // Fetch serviceType ID from serviceType
 router.get("/all/getservicetypeid", serviceTypeController.getServiceTypeID);
 
+// Fetch service types from service Id
+router.get('/all/getservicetypes/:serviceId', serviceTypeController.fetchServiceTypes);
+
 //Calling Chatbot API
 router.post('/all/chat', chatbotController.chatHandler);
 
@@ -59,14 +62,29 @@ router.post('/all/addserviceprovider', serviceProviderController.addServiceProvi
 // Fetch Records based on ServiceType ID and Price range
 router.get('/all/getspsearchrecords', serviceProviderController.getRecords);
 
+// Fetch records based on Service PRovider ID
+router.get('/all/getserviceproviders/:serviceProviderId', serviceProviderController.getServiceProviderRecords);
+
+// Update Service Provider Record 
+router.put('/all/updateserviceprovider/:id', serviceProviderController.updateServiceProvider);
+
+// Remove Service Provider Record
+router.delete('/all/deleteserviceprovider/:id', serviceProviderController.deleteServiceProvider);
+
 // Get all bookings for an user
 router.get("/all/getcustbookings/:serviceProviderId", bookingsController.fetchBookingsAPI);
 
 // Get all bookings for all users
 router.get("/all/getallcustbookings/:userId", bookingsController.fetchAllBookingsAPI);
 
+// Get all SP bookings
+router.get("/all/getallspbookings/:serviceProviderId", bookingsController.fetchAllSPBookings);
+
 // Get NExt booking Date
 router.get("/all/getnextbooking/:userId", bookingsController.getNextBooking);
+
+// Get SP Next booking Details
+router.get("/all/getspnextbooking/:serviceProviderId", bookingsController.getSPNextBooking);
 
 // Book a service 
 router.post("/all/bookService", bookingsController.bookService);

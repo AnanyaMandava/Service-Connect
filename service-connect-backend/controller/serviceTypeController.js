@@ -98,4 +98,21 @@ exports.getServiceTypeID =async (req, res) => {
       res.status(500).send('Server error');
     }
   };
+
+// Fetch Service Types based on Service Id
+exports.fetchServiceTypes = async (req, res) => {
+
+    try {
+        const { serviceId } = req.params;
+        // Query all services from the Service table
+        const servicetypes = await ServiceType.find({ service: serviceId });
+
+        // Send the retrieved services as a response
+        res.status(200).json(servicetypes);
+    } catch (error) {
+        // Handle errors
+        console.error('Error fetching servicetypes:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
   

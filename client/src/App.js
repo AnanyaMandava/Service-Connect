@@ -27,6 +27,7 @@ import AdminaddDrone from './Admin/AdminDroneManagement/Adminadddrone';
 import AdminDroneCatalog from './Admin/AdminDroneCatalog/AdminDroneCatalog';
 import AdmineditdroneCatalog from './Admin/AdminDroneCatalog/AdmineditdroneCatalog';
 import CompleteBooking from './Pilot/CompletedBookings';
+import AddServiceComponent from './Pilot/AddService';
 
 function App() {
   const navigate = useNavigate();
@@ -126,6 +127,7 @@ function App() {
           <Route path="Schedule" element={<Schedule/>}/>
           <Route path="PilotBooking" element={<PilotBooking/>}/>
           <Route path="CompleteBooking" element={<CompleteBooking/>}/>
+          <Route path="AddServiceComponent" element={<AddServiceComponent/>}/>
           <Route path="StartService" element={<StartService/>}/>
           
         </Route>
