@@ -11,6 +11,8 @@ const serviceType = require("../Models/serviceTypeSchema");
 const serviceProvider = require("../Models/serviceCatalogSchema");
 const userName = require("../Models/userSchema");
 const Booking = require("../Models/bookingSchema");
+const Session = require('../Models/sessionSchema'); // Import the session schema
+
 
 var intentHistory=[];
 let selected_service="";
@@ -20,6 +22,47 @@ let selected_timings="";
 let b_service_id = "";
 let b_service_type_id = "";
 let b_service_provider_id = "";
+
+const serviceMap = {
+    "HMS": "Home Maintenance and Repair Services",
+    "COS": "Cleaning and Organizational Services",
+    "HWS": "Health and Wellness Services",
+    "BPG": "Beauty and Personal Grooming Services",
+    "PS": "Pet Services",
+    "FBS": "Food and Beverage Services",
+    "EES": "Educational and Entertainment Services",
+    "GLS": "Gardening and Landscaping Services"
+};
+
+const serviceTypeMap = {
+    "PS": "Plumbing Services",
+    "ES": "Electrical Services",
+    "HS": "HVAC Services",
+    "AR": "Appliance Repair",
+    "HC": "House Cleaning",
+    "CC": "Carpet Cleaning",
+    "WW": "Window Washing",
+    "CHO": "Closet and Home Organization",
+    "INC": "In-home Nursing Care",
+    "PT": "Physical Therapy",
+    "PET": "Personal Training",
+    "MT": "Massage Therapy",
+    "MHBS": "Mobile Hairdressing and Barber Services",
+    "MA": "Makeup Artists",
+    "MEPE": "Manicure and Pedicure",
+    "MPG": "Mobile Pet Grooming",
+    "PETS": "Pet Sitting",
+    "DW": "Dog Walking",
+    "PCS": "Personal Chef Services",
+    "CSG": "Catering for Small Gatherings",
+    "WT": "Wine Tasting",
+    "TM": "Tutoring",
+    "ML": "Music Lessons",
+    "ME": "Magicians or Entertainers",
+    "LDC": "Landscape Design Consultation",
+    "GME": "Garden Maintenance",
+    "TRS": "Tree Services"
+};
 
 const openAiSummary = async (msg, summaryData) => {
     if (conversationHistory.length === 0) {
@@ -35,7 +78,7 @@ const openAiSummary = async (msg, summaryData) => {
 
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4',
             max_tokens: 150,
             temperature: 0.5,
             messages: conversationHistory,
@@ -61,18 +104,19 @@ const openAiSummary = async (msg, summaryData) => {
 };
 
 const detectIntent = async (msg) => {
+
     let intent = [];
     intent.push({
         role: "system",
-        content: "You are here to detect intent of the user, If the user wants to book an appointment you reply with 'NEW_BOOKING' only, If the user wants to select a particular option with either a number or a name from the list you must respond with 'OPTION' only, If the user is providing you with the date and time you must respond with DATETIMESELECTION only, If the user wants to view his bookings can you respond back with SHOW, else reply with 'UNRELATED' only"
-    });
+        content: "You are here to detect intent of the user, if the user has provided more than one information(service(Home Maintenance and Repair Services (Shortcut - HMS), Cleaning and Organizational Services(Shortcut - COS), Health and Wellness Services(Shortcut - HWS), Beauty and Personal Grooming Services(Shortcut - BPG), Pet Services(Shortcut - PS), Food and Beverage Services(Shortcut - FBS), Educational and Entertainment Services(Shortcut - EES), Gardening and Landscaping Services(Shortcut - GLS)), servicetype(based on service - Plumbing Services(shortcut -PS) Electrical Services (shortcut -ES) HVAC Services (shortcut -HS) Appliance Repair (shortcut -AR) House Cleaning (shortcut -HC) Carpet Cleaning (shortcut -CC) Window Washing (shortcut -WW) Closet and Home Organization (shortcut -CHO) In-home Nursing Care (shortcut -INC) Physical Therapy (shortcut -PT) Personal Training (shortcut - PET) Massage Therapy (shortcut -MT) Mobile Hairdressing (shortcut -MH) and Barber Services (shortcut -BS) Makeup Artists (shortcut -MA) Manicure (shortcut -ME) and Pedicure (shortcut -PE) Mobile Pet Grooming (shortcut -MPG) Pet Sitting (shortcut -PETS) Dog Walking (shortcut -DW) Personal Chef Services (shortcut -PCS) Catering for Small Gatherings (shortcut - CSG) Wine Tasting (shortcut -WT) Tutoring Music Lessons (shortcut -TM) Magicians or Entertainers (shortcut - ME) Landscape Design Consultation (shortcut -LDC) Garden Maintenance (shortcut -GME) Tree Services (shortcut - TRS), date or/and time in a sentence) reply accordingly with the information or question, once you have all the information generate a code concatenating shortcuts with underscore(service_servicetyp_date_time) in your final response and display details. detect the related service and service type from the message and assign to a particular shortcut. If a user has given date and time as well concatenate date and time to the above generated shortcut using underscores using this (YYYY-MM-DD HH:MM:SS) format, Keep asking questions on the missing information in the concatenated string and return the concatenated string with all four information shortcuts in order. If the user message just contains a message that he wants to book a new service/appointment request with no other additional information then return 'NEWBOOKING'. If the user wants to view his bookings can you respond back with SHOW, else reply with 'UNRELATED' only."
+     });
     intent.push({
         role: "user",
         content: msg // I want to book massage service tomorrow --> response
     });
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4',
             max_tokens: 150,
             temperature: 0.5,
             messages: intent,
@@ -91,6 +135,7 @@ const detectIntent = async (msg) => {
     }
 }
 
+
 const detectOptionSelection = async (msg,list) => {
     let intent = [];
     intent.push({
@@ -103,7 +148,7 @@ const detectOptionSelection = async (msg,list) => {
     });
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4',
             max_tokens: 150,
             temperature: 0.5,
             messages: intent,
@@ -134,7 +179,38 @@ const detectDateAndTime = async (msg) => {
     });
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4',
+            max_tokens: 150,
+            temperature: 0.5,
+            messages: intent,
+        }, {
+            headers: {
+                'Authorization': `Bearer ${process.env.API_KEY}`
+            }
+        });
+        const aiMessage = response.data.choices[0].message.content;
+        return aiMessage;
+    } catch (error) {
+        if (error.response) {
+            console.error('OpenAI API responded with:', error.response.status, error.response.data);
+        }
+        throw error;
+    }
+}
+
+const detectMulti = async (msg) => {
+    let intent = [];
+    intent.push({
+        role: "system",
+        content: "You are here to detect the information correctly. please note that we are looking for 4 details - service(shortcut serv )(fetch services from getService() function), service type(short cut st) (based on service fetch theservicetypes using getservicetypes() function), service provider(shortcut sp) and date(shortcut d) and time(shortcut t), if a user has given more than one information in a single sententence you append the detected shortcuts with an underscore and return - for example if a user says i want to book a cleaning service on apr 23rd you reply with serv_d and so on"
+    });
+    intent.push({
+        role: "user",
+        content: msg
+    });
+    try {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            model: 'gpt-4',
             max_tokens: 150,
             temperature: 0.5,
             messages: intent,
@@ -225,234 +301,22 @@ const getServiceProviders = async (selected_type) => {
 
 exports.chatHandler = async (req, res) => {
     const userMessage = req.body.message;
+    const userId = req.body.userId;
     const email = req.body.email;
-    console.log(userMessage)
+
+
+    console.log("user Message:", userMessage)
     const detectedIntent = await detectIntent(userMessage);
     intentHistory.push(detectedIntent);
-    console.log(detectedIntent)
-
-    if (intentHistory[intentHistory.length - 1] === 'NEW_BOOKING') {
-        try {
-            const services = await servicesInfo.find().distinct('serviceName');
-            // const services = await getService();
-            let serviceList = services.map((service, index) => `${index + 1}. ${service}`).join('\n');
-            let responseMessage = `Available services:\n${serviceList}`;
-            console.log("User ID:", req.body.userId);
-            res.json({ message: responseMessage });
-        } catch (error) {
-            console.error('Error fetching services:', error);
-            res.status(500).send("An error has occurred");
+    console.log("AI Response:",detectedIntent)
+    res.json({message : detectedIntent});
+    
+        if (!req.body.message) {
+            return res.status(400).json({ error: "Message is required" });
         }
-    }
-    else if(intentHistory[intentHistory.length-1] === 'OPTION' && intentHistory[intentHistory.length-2] === 'NEW_BOOKING') {
-        // Fetch the list of services
-        const serviceList = await getService();
 
-        // Use detectOptionSelection to determine the user's choice
-        const openAiResponse = await detectOptionSelection(userMessage, serviceList);
-
-        if (openAiResponse) {
-            // const 
-            selected_service = openAiResponse; // Assuming openAiResponse contains the selected service type name
-            console.log("selected service:", selected_service);
-            const serviceTypes = await getServiceType(selected_service);
-            console.log("servicetype1:", serviceTypes);
-             servicesInfo.findOne({ serviceName: selected_service })
-                .then(service => {
-                    console.log("Service ID:", service._id);
-                    b_service_id = service._id;
-                    if (!service) {
-                        res.json({ message: `Service ${selected_service} not found` });
-                    } else {
-                        console.log("Service ID:", service._id);
-                        serviceType.find({ service: service._id })
-                            .populate('service') // Populate the referenced service
-                            .exec()
-                            .then(serviceTypes => {
-                                console.log("Service doc det:", service.serviceName);
-                                console.log("Service Types:", serviceTypes);
-                                    let serviceTypesList = serviceTypes.map((serviceType, index) => `${index + 1}. ${serviceType.serviceType}`).join('\n');
-                                    let responseMessage = `You have selected: ${selected_service}\nAvailable service types:\n${serviceTypesList}`;
-                                    res.json({ message: responseMessage });
-                            })
-                            .catch(error => {
-                                console.error('Error fetching service types:', error);
-                                res.status(500).send("An error has occurred");
-                            });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching service:', error);
-                    res.status(500).send("An error has occurred");
-                });
-        } else {
-            res.json({ message: "I couldn't understand your selection. Please try again." });
-        }
-    }   
-    else if(intentHistory[intentHistory.length-1] === 'OPTION' && intentHistory[intentHistory.length-2] === 'OPTION' && intentHistory[intentHistory.length-3] === 'NEW_BOOKING'){
-        console.log("Selected Service:", selected_service);
-        const serviceTypeList = await getServiceType(selected_service);
+        const openAiResponse = await detectIntent(userMessage);
+        console.log("C:", openAiResponse);
+        // res.json({ message: openAiResponse });
     
-        const openAiResponse = await detectOptionSelection(userMessage, serviceTypeList);
-        console.log("OpenAI Response2:", userMessage);
-    
-        if (openAiResponse) {
-            selected_type = openAiResponse;
-            const providerList = await getServiceProviders(selected_type);
-            console.log("Providers List:", providerList);
-            serviceType.findOne({ serviceType: selected_type })
-            .then(servicetype => {
-                console.log("Service Type Id:", servicetype._id);
-                b_service_type_id = servicetype._id;
-                if (!servicetype) {
-                    res.json({ message: `Service ${selected_type} not found` });
-                } else {
-                    console.log("Service ID:", servicetype._id);
-                                let responseMessage = `You have selected: ${selected_type}\nAvailable service providers:\n${providerList}`;
-                                res.json({ message: responseMessage });
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching service:', error);
-                res.status(500).send("An error has occurred");
-            });
-    } else {
-        res.json({ message: "I couldn't understand your selection. Please try again." });
-    }
-    }
-    else if(intentHistory[intentHistory.length-1] === 'OPTION' && intentHistory[intentHistory.length-2] === 'OPTION' && intentHistory[intentHistory.length-3] === 'OPTION'){
-        const providerList = await getServiceProviders(selected_type);
-    
-        const openAiResponse = await detectOptionSelection(userMessage, providerList);
-        console.log("OpenAI Response:", openAiResponse);
-    
-        if (openAiResponse) {
-            selected_provider = openAiResponse;
-            const selectedProviderRecord = await userName.findOne({ fullname: selected_provider });
-            b_service_provider_id = selectedProviderRecord._id;
-            // const providerList = await getServiceProviders(selected_service);
-            let responseMessage = `Selected service provider:\n${selected_provider}, Please provide a date and time for your appointment`;
-            res.json({ message: responseMessage });
-        } else {
-            res.json({ message: "I couldn't understand your selection. Please try again." });
-        }
-    }
-    else if(intentHistory[intentHistory.length-1]=="DATETIMESELECTION" && intentHistory[intentHistory.length-2] === 'OPTION' && intentHistory[intentHistory.length-3] === 'OPTION'){    
-        const openAiResponse = await detectDateAndTime(userMessage);
-        console.log("OpenAI Response for time selection:", openAiResponse);
-        if (openAiResponse) {
-            selected_timings = openAiResponse;//selected timings has the following value = 2022-12-12 11:00:00 11:00:00 12:00:00
-            let responseMessage = `you have selected the following time slot:\n${selected_timings}`;
-            const [bookedDate, startTime, endTime] = selected_timings.split(" ");
-            console.log("Response Message", responseMessage);
-            console.log("Split time details:", selected_timings.split(" "));
-            console.log("Service ID, Service Type ID, User ID, Service Provider ID", b_service_id, b_service_type_id, req.body.userId, b_service_provider_id);
-            console.log("Start Time", new Date(`${bookedDate}T${startTime}`));
-                //console.log("End Time", new Date(`${bookedDate}T${endTime}`));
-                const newBooking = new Booking({
-                    user: req.body.userId, // Assuming userId is available in req.body
-                    serviceProvider: b_service_provider_id, // Assuming selected_provider is available
-                    service: b_service_id, // Assuming selected_service is available
-                    serviceType: b_service_type_id, // Assuming selected_type is available
-                    bookingDate: new Date(`${bookedDate}T${startTime}`),
-                    // startTime: startTime,
-                    // endTime: endTime,
-                    totalAmount: 0, // You may adjust this as needed
-                    paymentStatus: "Pending" // You may adjust this as needed
-                });
-    
-            try {
-                await newBooking.save();
-                res.json({ message: "Booking successful!" });
-            } catch (error) {
-                console.error('Error saving booking:', error);
-                res.status(500).json({ error: 'An error occurred while saving booking' });
-            }
-        } else {
-            res.json({ message: "I couldn't understand your selection. Please try again." });
-        }
-    }
-    else if (intentHistory[intentHistory.length - 1] === "SHOW") {
-        const userId = req.body.userId; // Assuming userId is available in req.body
-    
-        Booking.find({ user: userId })
-            .populate('service')
-            .populate('serviceProvider')
-            .populate('serviceType')
-            .then(bookings => {
-                if (bookings.length > 0) {
-                    let bookingsList = `You currently have ${bookings.length} booking(s): \n`;
-                    bookings.forEach((booking, index) => {
-                        const formattedDate = moment(booking.bookingDate).format('MMM Do');
-                        const formattedStartTime = moment(booking.startTime).format('ha');
-                        const formattedEndTime = moment(booking.endTime).format('ha');
-                        bookingsList += `${index + 1}) Service: ${booking.service.serviceName} \n`;
-                        bookingsList += `   Type: ${booking.serviceType.serviceType}\n`;
-                        bookingsList += `   Date: ${formattedDate}\n`;
-                        bookingsList += `   Time: ${formattedStartTime} to ${formattedEndTime}\n\n`;
-                    });
-                    res.json({ message: bookingsList.trim(), bookings: "showbookings" });
-                } else {
-                    res.json({ message: 'You have no bookings.' });
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching user bookings:', error);
-                res.status(500).send('Error fetching bookings');
-            });
-    }
-    
-    
-
-    // const intent = await detectIntent(userMessage);
-    // if (intent === 'ROUTE') {
-    //     return res.json({ message: 'ROUTE' });
-    // } else if (intent === 'DATA') {
-    //     try {
-    //         const summaryData = await getDataSummary(email);
-    //         const openAiResponse = await openAiSummary(userMessage, summaryData);
-    //         res.json({ message: openAiResponse });
-    //     } catch (error) {
-    //         console.error('Error processing data summary:', error);
-    //         res.status(500).send('Error processing data summary');
-    //     }
-    // } else if (intent.toLowerCase().includes('download')) {
-    //     const { start, end } = extractDates(intent);
-    //     if (start && end) {
-    //         const downloadLink = `/download-data?startDate=${start}&endDate=${end}&email=${email}`;
-    //         return res.json({ message: 'DOWNLOAD', startDate:start, endDate:end, email:email });
-    //     } else {
-    //         return res.json({ message: "I couldn't find the dates you mentioned. Could you please provide the start and end dates for the download?" });
-    //     }
-    // } else {
-    //     res.json({ message: "I'm not sure what you're asking for. Can you please clarify if you want to navigate the website, need information on data, or wish to download something?" });
-    // }
-}
-
-// app.get('/api/loginUser', (req,res) => {
-//     const email = req.query.email;
-//     const password = req.query.password;
-//     const query= "select count(*) as cnt from Users where email='"+email+"' and password='"+password+"';"
-//     db.query(query,(error,result)=>{
-//         if(error==null){
-//             if(result[0].cnt===1){
-//                 res.send("ok")
-//             }
-//             else{
-//                 res.send("no")
-//             }
-//         }
-//         else{
-//             res.send("An error has occured");
-//             console.log(error)
-//         }
-//     });
-// })
-
-// app.get('/', (req, res) => {
-//     res.send('Hello World!')
-// })
-
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`)
-// })
+};
