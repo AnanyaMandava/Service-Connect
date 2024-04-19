@@ -2,26 +2,34 @@
 // const express = require('express');
 // const mysql = require('mysql');
 // const cors = require("cors");
+const moment = require('moment');
 const axios = require('axios');
-// const multer = require('multer');
-const moment = require('moment-timezone');
-// const path = require('path');
-const servicesInfo = require("../Models/serviceSchema");
-const serviceType = require("../Models/serviceTypeSchema");
-const serviceProvider = require("../Models/serviceCatalogSchema");
-const userName = require("../Models/userSchema");
-const Booking = require("../Models/bookingSchema");
-const Session = require('../Models/sessionSchema'); // Import the session schema
+const ConversationState = require('../Models/conversationStateSchema');
+const ServiceType = require('../Models/serviceTypeSchema');
+const serviceProvider = require('../Models/serviceCatalogSchema');
+const userName = require('../Models/userSchema');
+
+// Function to get or create conversation state
+const findOrCreateConversationState = async (userId) => {
+    let conversationState = await ConversationState.findOne({ userId });
+    if (!conversationState) {
+        // If conversation state doesn't exist, create a new one with an empty messages array
+        conversationState = new ConversationState({ userId, state: 'INITIAL', messages: [] });
+        await conversationState.save();
+    } else if (!conversationState.messages) {
+        // If conversation state exists but doesn't have a messages array, initialize it
+        conversationState.messages = [];
+        await conversationState.save();
+    }
+    return conversationState;
+};
 
 
-var intentHistory=[];
-let selected_service="";
-let selected_type="";
-let selected_provider="";
-let selected_timings="";
-let b_service_id = "";
-let b_service_type_id = "";
-let b_service_provider_id = "";
+// Function to update the conversation state
+const updateConversationState = async (userId, updates) => {
+    const options = { new: true, upsert: true };
+    return ConversationState.findOneAndUpdate({ userId }, updates, options);  
+};
 
 const serviceMap = {
     "HMS": "Home Maintenance and Repair Services",
@@ -64,62 +72,83 @@ const serviceTypeMap = {
     "TRS": "Tree Services"
 };
 
-const openAiSummary = async (msg, summaryData) => {
-    if (conversationHistory.length === 0) {
-        conversationHistory.push({
-            role: "system",
-            content: "The following is a summary of energy usage data: " + summaryData
-        });
-    }
-    conversationHistory.push({
-        role: "user",
-        content: msg
-    });
-
-    try {
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-4',
-            max_tokens: 150,
-            temperature: 0.5,
-            messages: conversationHistory,
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.API_KEY}`
-            }
-        });
-
-        // Extract the AI message and add it to the conversation history
-        const aiMessage = response.data.choices[0].message.content;
-        conversationHistory.push({
-            role: "assistant",
-            content: aiMessage
-        });
-        return aiMessage;
-    } catch (error) {
-        if (error.response) {
-            console.error('OpenAI API responded with:', error.response.status, error.response.data);
-        }
-        throw error;
-    }
+const detectService = (input) => {
+    const detectedServiceKey = Object.keys(serviceMap).find(key => input.toLowerCase().includes(key.toLowerCase()));
+    return detectedServiceKey ? serviceMap[detectedServiceKey] : null;
 };
 
-const detectIntent = async (msg) => {
+const detectServiceType = (input) => {
+    const detectedServiceTypeKey = Object.keys(serviceTypeMap).find(key => input.toLowerCase().includes(key.toLowerCase()));
+    return detectedServiceTypeKey ? serviceTypeMap[detectedServiceTypeKey] : null;
+};
+  
+  // Function to extract date and time from input using regex and moment.js
+  const detectDateTime = (input) => {
+    // Regex to match dates in the format of "April 25th 4 PM" or "2021-04-25 16:00"
+    const dateRegex = /(\b\d{1,2}\D{0,3})?\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s*\d{1,2}(?:st|nd|rd|th)?,?\s*\d{4}(?: \d{1,2}:\d{2}:\d{2})?|(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/i;
+    const matches = input.match(dateRegex);
+  
+    // If a match is found, try to parse it with moment.js to confirm it's a valid date
+    if (matches) {
+      // Try parsing with moment.js
+      const date = moment(matches[0], ['MMMM Do YYYY', 'YYYY-MM-DD HH:mm:ss']);
+      if (date.isValid()) {
+        return date.format('YYYY-MM-DD HH:mm:ss'); // Standardize the date format
+      }
+    }
+    return null;
+};
 
-    let intent = [];
-    intent.push({
+
+const detectIntent = async (msg, conversationState) => {
+
+    const filteredMessages = conversationState.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+    }));
+    
+    let systemMessages  = [
+    {
         role: "system",
-        content: "You are here to detect intent of the user, if the user has provided more than one information(service(Home Maintenance and Repair Services (Shortcut - HMS), Cleaning and Organizational Services(Shortcut - COS), Health and Wellness Services(Shortcut - HWS), Beauty and Personal Grooming Services(Shortcut - BPG), Pet Services(Shortcut - PS), Food and Beverage Services(Shortcut - FBS), Educational and Entertainment Services(Shortcut - EES), Gardening and Landscaping Services(Shortcut - GLS)), servicetype(based on service - Plumbing Services(shortcut -PS) Electrical Services (shortcut -ES) HVAC Services (shortcut -HS) Appliance Repair (shortcut -AR) House Cleaning (shortcut -HC) Carpet Cleaning (shortcut -CC) Window Washing (shortcut -WW) Closet and Home Organization (shortcut -CHO) In-home Nursing Care (shortcut -INC) Physical Therapy (shortcut -PT) Personal Training (shortcut - PET) Massage Therapy (shortcut -MT) Mobile Hairdressing (shortcut -MH) and Barber Services (shortcut -BS) Makeup Artists (shortcut -MA) Manicure (shortcut -ME) and Pedicure (shortcut -PE) Mobile Pet Grooming (shortcut -MPG) Pet Sitting (shortcut -PETS) Dog Walking (shortcut -DW) Personal Chef Services (shortcut -PCS) Catering for Small Gatherings (shortcut - CSG) Wine Tasting (shortcut -WT) Tutoring Music Lessons (shortcut -TM) Magicians or Entertainers (shortcut - ME) Landscape Design Consultation (shortcut -LDC) Garden Maintenance (shortcut -GME) Tree Services (shortcut - TRS), date or/and time in a sentence) reply accordingly with the information or question, once you have all the information generate a code concatenating shortcuts with underscore(service_servicetyp_date_time) in your final response and display details. detect the related service and service type from the message and assign to a particular shortcut. If a user has given date and time as well concatenate date and time to the above generated shortcut using underscores using this (YYYY-MM-DD HH:MM:SS) format, Keep asking questions on the missing information in the concatenated string and return the concatenated string with all four information shortcuts in order. If the user message just contains a message that he wants to book a new service/appointment request with no other additional information then return 'NEWBOOKING'. If the user wants to view his bookings can you respond back with SHOW, else reply with 'UNRELATED' only."
-     });
-    intent.push({
+        content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category, service type, and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services). And then list out all the service providers related to the servicetype and ask user for which service provider they want to choose. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm the service category related to it, which in this case is 'Pet Services (PS)', and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format 'service_servicetype_serviceprovider_date_time'. "
+     },
+    {
         role: "user",
         content: msg // I want to book massage service tomorrow --> response
-    });
+    }
+];
+
+systemMessages = systemMessages.concat(filteredMessages);
+
+const detectedServiceType = detectServiceType(msg);
+    if (detectedServiceType) {
+        const serviceProviderList = getServiceProviders(detectedServiceType);
+        if (serviceProviderList.length > 0) {
+            // Append the list of service providers to the response message
+            systemMessages.push({
+                role: "assistant",
+                content: `Here are some service providers for ${detectedServiceType}: ${serviceProviderList}`
+            });
+        } else {
+            // If no service providers are found, inform the user
+            systemMessages.push({
+                role: "assistant",
+                content: `Sorry, no service providers found for ${detectedServiceType}`
+            });
+        }
+    }
+
+      // If there's existing conversation state, add it to the messages array
+    if (conversationState.lastMessage) {
+        systemMessages.push({ role: "assistant", content: conversationState.lastMessage });
+      }
+
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
             model: 'gpt-4',
             max_tokens: 150,
             temperature: 0.5,
-            messages: intent,
+            messages: systemMessages,
         }, {
             headers: {
                 'Authorization': `Bearer ${process.env.API_KEY}`
@@ -134,147 +163,11 @@ const detectIntent = async (msg) => {
         throw error;
     }
 }
-
-
-const detectOptionSelection = async (msg,list) => {
-    let intent = [];
-    intent.push({
-        role: "system",
-        ontent: "You are here to detect option selection of the user, The user can select the option based on its related number or its name, from the provided list you must respond back with its name only, else respond with OOPS only. Following is the provided list: "+list
-    });
-    intent.push({
-        role: "user",
-        content: msg
-    });
-    try {
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-4',
-            max_tokens: 150,
-            temperature: 0.5,
-            messages: intent,
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.API_KEY}`
-            }
-        });
-        const aiMessage = response.data.choices[0].message.content;
-        return aiMessage;
-    } catch (error) {
-        if (error.response) {
-            console.error('OpenAI API responded with:', error.response.status, error.response.data);
-        }
-        throw error;
-    }
-}
-
-const detectDateAndTime = async (msg) => {
-    let intent = [];
-    intent.push({
-        role: "system",
-        content: "You are here to detect date and time properly from the user, you must respond back three items the first item is the detected date in the following format YYYY-MM-DD, second item is the detected time in the following format only HH:MM:SS, third item is the detected time added with 1 hour time in this format only HH:MM:SS. In essence you must respond back the required items in this format only: YYYY-MM-DD HH:MM:SS HH:MM:SS and note that user can also respond with names of the days, please respond and return accordingly. the time here should be in PST."
-    });
-    intent.push({
-        role: "user",
-        content: msg
-    });
-    try {
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-4',
-            max_tokens: 150,
-            temperature: 0.5,
-            messages: intent,
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.API_KEY}`
-            }
-        });
-        const aiMessage = response.data.choices[0].message.content;
-        return aiMessage;
-    } catch (error) {
-        if (error.response) {
-            console.error('OpenAI API responded with:', error.response.status, error.response.data);
-        }
-        throw error;
-    }
-}
-
-const detectMulti = async (msg) => {
-    let intent = [];
-    intent.push({
-        role: "system",
-        content: "You are here to detect the information correctly. please note that we are looking for 4 details - service(shortcut serv )(fetch services from getService() function), service type(short cut st) (based on service fetch theservicetypes using getservicetypes() function), service provider(shortcut sp) and date(shortcut d) and time(shortcut t), if a user has given more than one information in a single sententence you append the detected shortcuts with an underscore and return - for example if a user says i want to book a cleaning service on apr 23rd you reply with serv_d and so on"
-    });
-    intent.push({
-        role: "user",
-        content: msg
-    });
-    try {
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-4',
-            max_tokens: 150,
-            temperature: 0.5,
-            messages: intent,
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.API_KEY}`
-            }
-        });
-        const aiMessage = response.data.choices[0].message.content;
-        return aiMessage;
-    } catch (error) {
-        if (error.response) {
-            console.error('OpenAI API responded with:', error.response.status, error.response.data);
-        }
-        throw error;
-    }
-}
-
-const getService = async () => {
-    try {
-        // Fetch all services from the serviceSchema
-        const allServices = await servicesInfo.find();
-
-        allServices.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
-
-        // If services are found, send them as a response
-        let sList = allServices.map((service, index) => `${index + 1}. ${service.serviceName}`).join('\n');
-        console.log("sList:", sList);
-
-        return sList;
-    } catch (error) {
-        console.error('Error fetching services:', error);
-        res.status(500).json({ error: 'An error occurred while fetching services' });
-    }
-};
-
-const getServiceType = async (selected_service) => {
-    try {
-        // Find the service document based on the serviceName
-        console.log("Sel Serv:", selected_service);
-        const service = await servicesInfo.findOne({ serviceName: selected_service });
-        console.log("Service(GST):", service);
-
-        // Extract the serviceId from the service document
-        const serviceId = service._id;
-        console.log("ServiceId (GST):", serviceId);
-
-        // Query the ServiceType collection to find documents associated with the serviceId
-        const serviceTypes = await serviceType.find({ service: serviceId });
-        let serviceTypeList = serviceTypes.map((servicetype, index) => `${index + 1}. ${servicetype.serviceType}`).join('\n');
-
-        console.log("ServiceTypes (GST):", serviceTypes);
-
-        return serviceTypeList;
-    } catch (error) {
-        console.error('Error fetching service types by service name:', error);
-    }
-};
-
 
 const getServiceProviders = async (selected_type) => {
     try {
         // Find the service document based on the selected service name
-        const servicetype = await serviceType.findOne({ serviceType: selected_type });
+        const servicetype = await ServiceType.findOne({ serviceType: selected_type });
 
         if (!servicetype) {
             throw new Error('Service not found');
@@ -298,25 +191,64 @@ const getServiceProviders = async (selected_type) => {
     }
 };
 
+const processUserMessage = async (message, userId) => {
+    // Retrieve or create the current conversation state
+    let conversationState = await findOrCreateConversationState(userId);
+    conversationState.messages.push({ role: 'user', content: message});
+
+    // Check for provided service, service type, and date/time in the user message
+    const service = detectService(message) || conversationState.service;
+    const serviceType = detectServiceType(message) || conversationState.serviceType;
+    const dateTime = detectDateTime(message) || conversationState.dateAndTime;
+
+    // Update the conversation state with the detected information
+    const updates = { service, serviceType, dateTime, messages: [...conversationState.messages, { role: 'user', content: message }] };
+    await updateConversationState(userId, updates);
+    // Prepare context for AI response
+    const context = prepareContext(message, conversationState);
+
+    // Call GPT-4 to process the message and get a response
+    const responseMessage = await detectIntent(message, context);
+
+    // Append this response to the conversation history
+    conversationState.messages.push({ role: 'assistant', content: responseMessage });
+
+    // Save the updated conversation state with the new message history
+    await updateConversationState(userId, { 
+        service, 
+        serviceType, 
+        dateTime, 
+        messages: conversationState.messages 
+    });
+
+    return responseMessage;
+};
+
+
+  const prepareContext = (message, conversationState) => {
+    let contextMessages = conversationState.messages || [];
+    contextMessages.push({ role: 'user', content: message });
+
+    // Only include the last few exchanges to maintain a relevant context
+    contextMessages = contextMessages.slice(-5);
+
+    return { messages: contextMessages };
+};
 
 exports.chatHandler = async (req, res) => {
-    const userMessage = req.body.message;
-    const userId = req.body.userId;
-    const email = req.body.email;
+    const { message, userId } = req.body;
 
-
-    console.log("user Message:", userMessage)
-    const detectedIntent = await detectIntent(userMessage);
-    intentHistory.push(detectedIntent);
-    console.log("AI Response:",detectedIntent)
-    res.json({message : detectedIntent});
-    
-        if (!req.body.message) {
-            return res.status(400).json({ error: "Message is required" });
-        }
-
-        const openAiResponse = await detectIntent(userMessage);
-        console.log("C:", openAiResponse);
-        // res.json({ message: openAiResponse });
-    
+    if (!message) {
+      return res.status(400).json({ error: "Message is required" });
+    }
+  
+    try {
+      const responseMessage = await processUserMessage(message, userId);
+  
+      // Send back the appropriate response
+      res.json({ message: responseMessage });
+    } catch (error) {
+      console.error('Error in chatHandler:', error);
+      res.status(500).send('Internal Server Error');
+    }
 };
