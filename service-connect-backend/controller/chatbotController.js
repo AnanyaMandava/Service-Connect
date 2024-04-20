@@ -31,6 +31,22 @@ const updateConversationState = async (userId, updates) => {
     return ConversationState.findOneAndUpdate({ userId }, updates, options);  
 };
 
+const detectBookingCode = (message) => {
+    const codeRegex = /([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)_([0-9]{4}-[0-9]{2}-[0-9]{2})_([0-9]{2}AM|[0-9]{2}PM)/;
+    const match = message.content.match(codeRegex);
+    console.log("entered detect code block")
+    if (match) {
+        return {
+            service: match[1],
+            serviceType: match[2],
+            serviceProvider: match[3],
+            date: match[4],
+            time: match[5]
+        };
+    }
+    return null;
+};
+
 const serviceMap = {
     "HMS": "Home Maintenance and Repair Services",
     "COS": "Cleaning and Organizational Services",
@@ -99,49 +115,36 @@ const detectServiceType = (input) => {
     return null;
 };
 
-
 const detectIntent = async (msg, conversationState) => {
-
-    const filteredMessages = conversationState.messages.map(msg => ({
-        role: msg.role,
-        content: msg.content
-    }));
-    
-    let systemMessages  = [
-    {
-        role: "system",
-        content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category, service type, and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services). And then list out all the service providers related to the servicetype and ask user for which service provider they want to choose. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm the service category related to it, which in this case is 'Pet Services (PS)', and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format 'service_servicetype_serviceprovider_date_time'. "
-     },
-    {
-        role: "user",
-        content: msg // I want to book massage service tomorrow --> response
-    }
-];
-
-systemMessages = systemMessages.concat(filteredMessages);
-
-const detectedServiceType = detectServiceType(msg);
-    if (detectedServiceType) {
-        const serviceProviderList = getServiceProviders(detectedServiceType);
-        if (serviceProviderList.length > 0) {
-            // Append the list of service providers to the response message
-            systemMessages.push({
-                role: "assistant",
-                content: `Here are some service providers for ${detectedServiceType}: ${serviceProviderList}`
-            });
-        } else {
-            // If no service providers are found, inform the user
-            systemMessages.push({
-                role: "assistant",
-                content: `Sorry, no service providers found for ${detectedServiceType}`
-            });
+    let systemMessages = [
+        {
+            role: "system",
+            content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category, service provider and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services). And then do not ask for user to specify the service provider directly, it is your responsibility to list out all the near by service providers in San Jose related to the servicetype as the user might not have any idea and then ask user for which service provider they want to choose from that list. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. when a user provides a service type, intelligently assign it under a service category. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm the service category related to it, which in this case is 'Pet Services (PS)', and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format 'service_servicetype_serviceprovider_date_time'. if you do not understand the users message list out the services and ask them what would they like to choose and end the chat once the user confirms the booking "
+        },
+        ...conversationState.messages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+        })),
+        {
+            role: "user",
+            content: msg
         }
-    }
+    ];
 
-      // If there's existing conversation state, add it to the messages array
-    if (conversationState.lastMessage) {
-        systemMessages.push({ role: "assistant", content: conversationState.lastMessage });
-      }
+    // Here, we'll check for booking codes in system responses
+    let bookingDetails = null;
+    systemMessages.forEach(message => {
+        if (message.role === "assistant") {
+            console.log("message here:",message )
+            const details = detectBookingCode(message);
+            if (details) bookingDetails = details;
+        }
+    });
+
+    if (bookingDetails) {
+        console.log("Detected booking details:", bookingDetails);
+        // You can now use bookingDetails for further processing
+    }
 
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
@@ -154,15 +157,14 @@ const detectedServiceType = detectServiceType(msg);
                 'Authorization': `Bearer ${process.env.API_KEY}`
             }
         });
-        const aiMessage = response.data.choices[0].message.content;
-        return aiMessage;
+        return response.data.choices[0].message.content;
     } catch (error) {
-        if (error.response) {
-            console.error('OpenAI API responded with:', error.response.status, error.response.data);
-        }
+        console.error('OpenAI API responded with:', error.response ? error.response.data : error.message);
         throw error;
     }
-}
+};
+
+
 
 const getServiceProviders = async (selected_type) => {
     try {
@@ -217,7 +219,7 @@ const processUserMessage = async (message, userId) => {
     await updateConversationState(userId, { 
         service, 
         serviceType, 
-        dateTime, 
+        // dateTime, 
         messages: conversationState.messages 
     });
 
