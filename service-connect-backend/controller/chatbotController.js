@@ -6,11 +6,16 @@ const moment = require('moment');
 const axios = require('axios');
 const ConversationState = require('../Models/conversationStateSchema');
 const ServiceType = require('../Models/serviceTypeSchema');
-const serviceProvider = require('../Models/serviceCatalogSchema');
+const serviceProviderInfo = require('../Models/serviceCatalogSchema');
+const ServiceInfo = require('../Models/serviceSchema');
 const userName = require('../Models/userSchema');
+const Booking = require("../Models/bookingSchema");
+
 let service= null;
     let serviceType = null;
     let dateTime = null;
+    let providersList = null;
+    let userId
 
 // Function to get or create conversation state
 const findOrCreateConversationState = async (userId) => {
@@ -57,11 +62,9 @@ const hasBookingCode = (message) => {
     console.log("Entered has booking code", bookingMatch);
 
     if (bookingMatch) {
-    service= null;
-    serviceType = null;
-    dateTime = null;
+    return true;
     }
-    return null;
+    return false;
 }
 
 
@@ -123,6 +126,28 @@ const detectServiceType = (input) => {
     });
     return detectedServiceTypeFullName || null;
 };
+
+function extractServiceProvider(providersList, responseMessage) {
+    // Split the providers list into individual providers
+    const providers = providersList.split('\n');
+    let providerMatch = "";
+    let providerName = "";
+    
+    // Create a regular expression to match each provider based on their numbering in the list
+    for (let provider of providers) {
+        providerMatch = provider.match(/^\d+\.\s*(.*)$/); // Matches '1. ABC Plumb' and captures 'ABC Plumb'
+        if (providerMatch) {
+            providerName = providerMatch[1];
+            const regex = new RegExp("\\b" + providerName + "\\b", "i"); // Create a regex to match the full name
+            if (regex.test(responseMessage)) {
+                return providerName; // Return the provider name if found in the response
+            }
+        }
+    }
+    console.log("providerMatch and Name:", providerMatch, providerName);
+
+    return null; // Return null if no provider was matched
+}
 
   
   // Function to extract date and time from input using regex and moment.js
@@ -224,7 +249,7 @@ const getServiceProviders = async (serviceType) => {
         }
 
         // Find all service types associated with the service
-        const serviceproviders = await serviceProvider.find({ serviceType: servicetype._id });
+        const serviceproviders = await serviceProviderInfo.find({ serviceType: servicetype._id });
 
         const serviceProviderIds = serviceproviders.map(provider => provider.serviceProvider);
 
@@ -270,7 +295,7 @@ const processUserMessage = async (message, userId) => {
         conversationState.serviceType = serviceType;
         
         console.log("service Type passed:", serviceType);
-        const providersList = await getServiceProviders(serviceType);
+        providersList = await getServiceProviders(serviceType);
         const listPattern = /(\d+\.\s*[^1-9\n]+(?:\n|$))+/g;
         responseMessage = responseMessage.replace(listPattern, providersList);
 
@@ -323,9 +348,42 @@ const processUserMessage = async (message, userId) => {
     const hasbookingcode = hasBookingCode(responseMessage);
     console.log("it has or  not",hasbookingcode);
 
+    if (hasbookingcode) {
+    let serviceProvider = extractServiceProvider(providersList, responseMessage);
+    console.log("Inside with values");
+    console.log("Service Provider:", serviceProvider);
+    console.log("Service:", service);
+    console.log("Service Type: ", serviceType);
+    console.log("Date and Time:", dateTime);
+    
+    const newBooking = new Booking({
+        user: userId, // Assuming userId is available in req.body
+        serviceProvider: await serviceProviderInfo.findOne({ user: serviceProvider}), // Assuming selected_provider is available
+        service: await ServiceInfo.findOne({ service: service }), // Assuming selected_service is available
+        serviceType: await ServiceType.findOne({ serviceType: serviceType }), // Assuming selected_type is available
+        bookingDate: dateTime,
+        // startTime: startTime,
+        // endTime: endTime,
+        totalAmount: 0, // You may adjust this as needed
+        paymentStatus: "Pending", // You may adjust this as needed
+        status: "Upcoming"
+    });
+
+try {
+    await newBooking.save();
+    responseMessage += "Booking Successful";
+} catch (error) {
+    console.error('Error saving booking:', error);
+    console.log("Error while bokking");
+}
+
+    service= null;
+    serviceType = null;
+    dateTime = null;
+}
+
     return responseMessage;
 };
-
 
   const prepareContext = (message, conversationState) => {
     let contextMessages = conversationState.messages || [];
