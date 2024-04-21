@@ -59,7 +59,7 @@ const serviceMap = {
 };
 
 const serviceTypeMap = {
-    "PS": "Plumbing Services",
+    "PBS": "Plumbing Services",
     "ES": "Electrical Services",
     "HS": "HVAC Services",
     "AR": "Appliance Repair",
@@ -89,14 +89,21 @@ const serviceTypeMap = {
 };
 
 const detectService = (input) => {
-    const detectedServiceKey = Object.keys(serviceMap).find(key => input.toLowerCase().includes(key.toLowerCase()));
-    return detectedServiceKey ? serviceMap[detectedServiceKey] : null;
+    // Using a case-insensitive regex to search for full service names
+    const detectedService = Object.entries(serviceMap).find(([key, value]) => 
+        new RegExp(value, "i").test(input)
+    );
+    return detectedService ? detectedService[1] : null; // Return the key if found
 };
 
 const detectServiceType = (input) => {
-    const detectedServiceTypeKey = Object.keys(serviceTypeMap).find(key => input.toLowerCase().includes(key.toLowerCase()));
-    return detectedServiceTypeKey ? serviceTypeMap[detectedServiceTypeKey] : null;
+    // Find the full name by checking each value in the serviceTypeMap
+    const detectedServiceTypeFullName = Object.values(serviceTypeMap).find(value => 
+        input.toLowerCase().includes(value.toLowerCase())
+    );
+    return detectedServiceTypeFullName || null;
 };
+
   
   // Function to extract date and time from input using regex and moment.js
   const detectDateTime = (input) => {
@@ -119,7 +126,7 @@ const detectIntent = async (msg, conversationState) => {
     let systemMessages = [
         {
             role: "system",
-            content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category, service provider and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services). And then do not ask for user to specify the service provider directly, it is your responsibility to list out all the near by service providers in San Jose related to the servicetype as the user might not have any idea and then ask user for which service provider they want to choose from that list. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. when a user provides a service type, intelligently assign it under a service category. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm the service category related to it, which in this case is 'Pet Services (PS)', and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format 'service_servicetype_serviceprovider_date_time'. if you do not understand the users message list out the services and ask them what would they like to choose and end the chat once the user confirms the booking "
+            content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category, service provider and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services). And then do not ask for user to specify the service provider directly, it is your responsibility to list out all the near by service providers in San Jose related to the servicetype as the user might not have any idea and then ask user for which service provider they want to choose from that list. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. when a user provides a service type, intelligently assign it under a service category. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm the service category related to it, which in this case is 'Pet Services (PS)', and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format 'service_servicetype_serviceprovider_date_time'(remember that you have to provide date and time in the format 'MM-DD-YYYY HH:MM:SS'). if you do not understand the users message list out the services and ask them what would they like to choose and end the chat once the user confirms the booking "
         },
         ...conversationState.messages.map(msg => ({
             role: msg.role,
@@ -166,10 +173,13 @@ const detectIntent = async (msg, conversationState) => {
 
 
 
-const getServiceProviders = async (selected_type) => {
+const getServiceProviders = async (serviceType) => {
     try {
+        console.log("service Type received:", serviceType);
         // Find the service document based on the selected service name
-        const servicetype = await ServiceType.findOne({ serviceType: selected_type });
+        const servicetype = await ServiceType.findOne({ serviceType: serviceType });
+        console.log("service type 2:", servicetype);
+
 
         if (!servicetype) {
             throw new Error('Service not found');
@@ -184,6 +194,7 @@ const getServiceProviders = async (selected_type) => {
 
         // Convert the results to a format suitable for sending
         let providerList = providerNames.map((provider, index) => `${index + 1}. ${provider.fullname}`).join('\n');
+        console.log("service providers list:", providerList);
 
         return providerList;
     } catch (error) {
@@ -196,32 +207,53 @@ const getServiceProviders = async (selected_type) => {
 const processUserMessage = async (message, userId) => {
     // Retrieve or create the current conversation state
     let conversationState = await findOrCreateConversationState(userId);
-    conversationState.messages.push({ role: 'user', content: message});
 
-    // Check for provided service, service type, and date/time in the user message
-    const service = detectService(message) || conversationState.service;
-    const serviceType = detectServiceType(message) || conversationState.serviceType;
-    const dateTime = detectDateTime(message) || conversationState.dateAndTime;
-
-    // Update the conversation state with the detected information
-    const updates = { service, serviceType, dateTime, messages: [...conversationState.messages, { role: 'user', content: message }] };
-    await updateConversationState(userId, updates);
+    // Append the user message to the conversation history
+    conversationState.messages.push({ role: 'user', content: message });
+    
     // Prepare context for AI response
     const context = prepareContext(message, conversationState);
 
     // Call GPT-4 to process the message and get a response
-    const responseMessage = await detectIntent(message, context);
+    let responseMessage = await detectIntent(message, context);
+    console.log("Resp mesg1:", responseMessage);
+
+    const service = detectService(responseMessage);
+    const serviceType = detectServiceType(responseMessage);
+    const dateTime = detectDateTime(message);
+    console.log("Serv Type:", serviceType);
+    // Update conversation state
+    if (service) {
+        conversationState.service = service;
+    }
+    if (serviceType) {
+        conversationState.serviceType = serviceType;
+        // Fetch service providers based on service type
+        console.log("service Type passed:", serviceType);
+        const providersList = await getServiceProviders(serviceType);
+        const listPattern = /(\d+\.\s*[^1-9\n]+(?:\n|$))+/g;
+        responseMessage = responseMessage.replace(listPattern, providersList);
+    }
+    if (dateTime) {
+        conversationState.dateAndTime = dateTime;
+    }
+    conversationState.messages.push({ role: 'user', content: message });
+
+    console.log("service value:", service);
+    console.log("service Type value:", serviceType);
+    console.log("service value:", conversationState.service);
+    console.log("service Type value:", conversationState.serviceType);
+
+    // Update the conversation state with the detected information
+    await updateConversationState(userId, conversationState);
 
     // Append this response to the conversation history
     conversationState.messages.push({ role: 'assistant', content: responseMessage });
 
     // Save the updated conversation state with the new message history
-    await updateConversationState(userId, { 
-        service, 
-        serviceType, 
-        // dateTime, 
-        messages: conversationState.messages 
-    });
+    await updateConversationState(userId, conversationState);
+
+    console.log("Resp mesg2:", responseMessage);
 
     return responseMessage;
 };
