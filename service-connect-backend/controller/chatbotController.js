@@ -356,33 +356,43 @@ const processUserMessage = async (message, userId) => {
     console.log("Service Type: ", serviceType);
     console.log("Date and Time:", dateTime);
     
-    const newBooking = new Booking({
-        user: userId, // Assuming userId is available in req.body
-        serviceProvider: await serviceProviderInfo.findOne({ user: serviceProvider}), // Assuming selected_provider is available
-        service: await ServiceInfo.findOne({ service: service }), // Assuming selected_service is available
-        serviceType: await ServiceType.findOne({ serviceType: serviceType }), // Assuming selected_type is available
-        bookingDate: dateTime,
-        // startTime: startTime,
-        // endTime: endTime,
-        totalAmount: 0, // You may adjust this as needed
-        paymentStatus: "Pending", // You may adjust this as needed
-        status: "Upcoming"
-    });
+    let serviceProviderDoc = await serviceProviderInfo.findOne({ fullname: serviceProvider });
+        let serviceDoc = await ServiceInfo.findOne({ serviceName: service });
+        let serviceTypeDoc = await ServiceType.findOne({ serviceType: serviceType });
+       // console.log("ids",serviceProviderDoc._id,serviceDoc._id,serviceTypeDoc._id)
+       console.log("Service Provider Document:", serviceProviderDoc);
+console.log("Service Document:", serviceDoc);
+console.log("Service Type Document:", serviceTypeDoc);
 
-try {
-    await newBooking.save();
-    responseMessage += "Booking Successful";
-} catch (error) {
-    console.error('Error saving booking:', error);
-    console.log("Error while bokking");
-}
+        if (serviceProviderDoc && serviceDoc && serviceTypeDoc) {
+            const newBooking = new Booking({
+                user: userId,
+                serviceProvider: serviceProviderDoc._id,
+                service: serviceDoc._id,
+                serviceType: serviceTypeDoc._id,
+                bookingDate: new Date(dateTime.toLocaleString()), // Ensure dateTime is converted to Date object
+                totalAmount: serviceProviderDoc.price,
+                paymentStatus: "Pending",
+                status: "Upcoming"
+            });
 
-    service= null;
+            // Save the new booking
+            try {
+                await newBooking.save();
+                responseMessage += " Your booking has been successfully created.";
+            } catch (error) {
+                console.error('Error saving booking:', error);
+               responseMessage += " There was an error creating your booking.";
+            }
+
+
+            }
+            service= null;
     serviceType = null;
     dateTime = null;
-}
-
-    return responseMessage;
+    serviceProvider=null;
+            }
+                return responseMessage;
 };
 
   const prepareContext = (message, conversationState) => {
