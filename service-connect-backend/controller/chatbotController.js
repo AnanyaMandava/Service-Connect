@@ -8,6 +8,9 @@ const ConversationState = require('../Models/conversationStateSchema');
 const ServiceType = require('../Models/serviceTypeSchema');
 const serviceProvider = require('../Models/serviceCatalogSchema');
 const userName = require('../Models/userSchema');
+let service= null;
+    let serviceType = null;
+    let dateTime = null;
 
 // Function to get or create conversation state
 const findOrCreateConversationState = async (userId) => {
@@ -43,9 +46,24 @@ const detectBookingCode = (message) => {
             date: match[4],
             time: match[5]
         };
+
     }
     return null;
 };
+
+const hasBookingCode = (message) => {
+    const bookingCodeRegex = /_(\d{2}\/\d{2})_(\d{2}:\d{2}:\d{2})/;
+    const bookingMatch = message.match(bookingCodeRegex);
+    console.log("Entered has booking code", bookingMatch);
+
+    if (bookingMatch) {
+    service= null;
+    serviceType = null;
+    dateTime = null;
+    }
+    return null;
+}
+
 
 const serviceMap = {
     "HMS": "Home Maintenance and Repair Services",
@@ -97,37 +115,57 @@ const detectService = (input) => {
 };
 
 const detectServiceType = (input) => {
+    const lowerInput = input.toLowerCase(); // Convert input to lower case once for efficiency
     // Find the full name by checking each value in the serviceTypeMap
-    const detectedServiceTypeFullName = Object.values(serviceTypeMap).find(value => 
-        input.toLowerCase().includes(value.toLowerCase())
-    );
+    const detectedServiceTypeFullName = Object.values(serviceTypeMap).find(value => {
+        const regex = new RegExp(`\\b${value.toLowerCase()}\\b`); // Create a regex that looks for the whole phrase as a whole word
+        return regex.test(lowerInput);
+    });
     return detectedServiceTypeFullName || null;
 };
 
   
   // Function to extract date and time from input using regex and moment.js
   const detectDateTime = (input) => {
-    // Regex to match dates in the format of "April 25th 4 PM" or "2021-04-25 16:00"
-    const dateRegex = /(\b\d{1,2}\D{0,3})?\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s*\d{1,2}(?:st|nd|rd|th)?,?\s*\d{4}(?: \d{1,2}:\d{2}:\d{2})?|(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/i;
-    const matches = input.match(dateRegex);
-  
-    // If a match is found, try to parse it with moment.js to confirm it's a valid date
-    if (matches) {
-      // Try parsing with moment.js
-      const date = moment(matches[0], ['MMMM Do YYYY', 'YYYY-MM-DD HH:mm:ss']);
-      if (date.isValid()) {
-        return date.format('YYYY-MM-DD HH:mm:ss'); // Standardize the date format
-      }
+          // First, try to extract the part that looks like a booking code with underscores
+    const bookingCodeRegex = /_(\d{2}\/\d{2})_(\d{2}:\d{2}:\d{2})/;
+    const bookingMatch = input.match(bookingCodeRegex);
+    console.log("Entered DT", bookingMatch);
+
+    if (bookingMatch) {
+        // Split the booking code part to extract date and time
+        const parts = bookingMatch[0].split('_');
+        const datePart = parts[parts.length - 2];  // Second last part for date
+        const timePart = parts[parts.length - 1];  // Last part for time
+
+        // Format the date and time into a proper string for parsing
+        const dateTimeStr = datePart.replace(/\//g, '-') + ' ' + timePart;
+        const date = moment(dateTimeStr, 'MM-DD HH:mm:ss', true);
+        if (date.isValid()) {
+            console.log(date.format('YYYY-MM-DD HH:mm:ss'));
+            return date.format('YYYY-MM-DD HH:mm:ss'); // Standardize the date format
+        }
     }
-    return null;
+
+
+    // If no booking code format found, fallback to parsing natural language date
+    const naturalDateRegex = /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:st|nd|rd|th)?,?\s+at\s+\d{1,2}:\d{2}\s+(AM|PM)/i;
+    const naturalMatch = input.match(naturalDateRegex);
+    if (naturalMatch) {
+        const date = moment(naturalMatch[0], 'MMMM D, YYYY at h:mm A', true);
+        if (date.isValid()) {
+            return date.format('YYYY-MM-DD HH:mm:ss');
+        }
+    }
+
+    return null; // Return null if no date-time could be parsed
 };
 
 const detectIntent = async (msg, conversationState) => {
     let systemMessages = [
         {
             role: "system",
-            content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category, service provider and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services). And then do not ask for user to specify the service provider directly, it is your responsibility to list out all the near by service providers in San Jose related to the servicetype as the user might not have any idea and then ask user for which service provider they want to choose from that list. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. when a user provides a service type, intelligently assign it under a service category. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm the service category related to it, which in this case is 'Pet Services (PS)', and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format 'service_servicetype_serviceprovider_date_time'(remember that you have to provide date and time in the format 'MM-DD-YYYY HH:MM:SS'). if you do not understand the users message list out the services and ask them what would they like to choose and end the chat once the user confirms the booking "
-        },
+            content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category,service type category, service provider and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services).it is your responsibility to list out all the near by service providers in San Jose related to the servicetype and then ask user which service provider they want to choose from that list. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. when a user provides a service type, intelligently assign it under a service category and vise vera and confirm with the user. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm both service category and service type category related to it, which in this case is 'Pet Services (PS)' under 'Mobile Pet Grooming’ category, and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format ‘service_servicetype_serviceprovider_date_time'(remember that you have to provide date and time in the format 'MM DD HH:mm:ss' eg '_04/15_04:00:00'). if you do not understand the users message list out all the services and ask them what would they like to choose and end the chat once the user confirms the booking"       },
         ...conversationState.messages.map(msg => ({
             role: msg.role,
             content: msg.content
@@ -204,6 +242,7 @@ const getServiceProviders = async (serviceType) => {
     }
 };
 
+
 const processUserMessage = async (message, userId) => {
     // Retrieve or create the current conversation state
     let conversationState = await findOrCreateConversationState(userId);
@@ -217,26 +256,52 @@ const processUserMessage = async (message, userId) => {
     // Call GPT-4 to process the message and get a response
     let responseMessage = await detectIntent(message, context);
     console.log("Resp mesg1:", responseMessage);
+    conversationState.service = service;
 
-    const service = detectService(responseMessage);
-    const serviceType = detectServiceType(responseMessage);
-    const dateTime = detectDateTime(message);
-    console.log("Serv Type:", serviceType);
-    // Update conversation state
-    if (service) {
-        conversationState.service = service;
+    conversationState.serviceType = serviceType;
+    if(service==null)
+    {
+        service = detectService(responseMessage);
+    conversationState.service = service;
     }
-    if (serviceType) {
+    if(serviceType==null)
+    {
+        serviceType = detectServiceType(responseMessage);
         conversationState.serviceType = serviceType;
-        // Fetch service providers based on service type
+        
         console.log("service Type passed:", serviceType);
         const providersList = await getServiceProviders(serviceType);
         const listPattern = /(\d+\.\s*[^1-9\n]+(?:\n|$))+/g;
         responseMessage = responseMessage.replace(listPattern, providersList);
+
     }
-    if (dateTime) {
+    if(dateTime==null)
+    {
+        dateTime = detectDateTime(responseMessage);
         conversationState.dateAndTime = dateTime;
     }
+
+
+
+    // const service = detectService(responseMessage);
+    // const serviceType = detectServiceType(responseMessage);
+    // const dateTime = detectDateTime(responseMessage);
+    // console.log("Serv Type:", serviceType);
+    // // Update conversation state
+    // if (service) {
+    //     conversationState.service = service;
+    // }
+    // if (serviceType) {
+    //     conversationState.serviceType = serviceType;
+    //     // Fetch service providers based on service type
+    //     console.log("service Type passed:", serviceType);
+    //     const providersList = await getServiceProviders(serviceType);
+    //     const listPattern = /(\d+\.\s*[^1-9\n]+(?:\n|$))+/g;
+    //     responseMessage = responseMessage.replace(listPattern, providersList);
+    // }
+    // if (dateTime) {
+    //     conversationState.dateAndTime = dateTime;
+    // }
     conversationState.messages.push({ role: 'user', content: message });
 
     console.log("service value:", service);
@@ -253,7 +318,10 @@ const processUserMessage = async (message, userId) => {
     // Save the updated conversation state with the new message history
     await updateConversationState(userId, conversationState);
 
+
     console.log("Resp mesg2:", responseMessage);
+    const hasbookingcode = hasBookingCode(responseMessage);
+    console.log("it has or  not",hasbookingcode);
 
     return responseMessage;
 };
