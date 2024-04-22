@@ -190,7 +190,7 @@ const detectIntent = async (msg, conversationState) => {
     let systemMessages = [
         {
             role: "system",
-            content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category,service type category, service provider and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services).it is your responsibility to list out all the near by service providers in San Jose related to the servicetype and then ask user which service provider they want to choose from that list. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. when a user provides a service type, intelligently assign it under a service category and vise vera and confirm with the user. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm both service category and service type category related to it, which in this case is 'Pet Services (PS)' under 'Mobile Pet Grooming’ category, and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format ‘service_servicetype_serviceprovider_date_time'(remember that you have to provide date and time in the format 'MM DD HH:mm:ss' eg '_04/15_04:00:00'). if you do not understand the users message list out all the services and ask them what would they like to choose and end the chat once the user confirms the booking"       },
+            content: "You are an intelligent assistant capable of booking a range of services for users. When users provide details, you should remember them and not ask for those details again. Your goal is to collect information: service category,service type category, service provider and date/time of the service. Here are the services and their corresponding service types: - Home Maintenance and Repair Services (Plumbing Services, Electrical Services, HVAC Services, Appliance Repair) - Cleaning and Organizational Services (House Cleaning, Carpet Cleaning, Window Washing, Closet and Home Organization) - Health and Wellness Services (In-Home Nursing Care, Physical Therapy, Personal Training, Massage Therapy) - Beauty and Personal Grooming Services (Mobile Hairdressing and Barber Services, Makeup Artists, Manicure and Pedicure) - Pet Services (Mobile Pet Grooming, Pet Sitting, Dog Walking) - Food and Beverage Services (Personal Chef Services, Catering for Small Gatherings, Wine Tasting) - Educational and Entertainment Services (Tutoring, Music Lessons, Magicians or Entertainers) - Gardening and Landscaping Services (Landscape Design Consultation, Garden Maintenance, Tree Services).it is your responsibility to list out all the near by service providers in San Jose related to the servicetype and then ask user which service provider they want to choose from that list. When a user provides complete information in one message, use it to fill in the booking form without asking for those details again. when a user provides a service type, intelligently assign it under a service category and vise vera and confirm with the user. If a user specifies a service that implies a service type, like 'Mobile Pet Grooming', confirm both service category and service type category related to it, which in this case is 'Pet Services (PS)' under 'Mobile Pet Grooming’ category, and then ask for the date and time. Once you have all necessary information, confirm the booking with a code in the format ‘service_servicetype_serviceprovider_date_time'(remember that you have to provide date and time in the format 'MM DD HH:mm:ss' eg '_04/15_04:00:00'). if you do not understand the users message list out all the services and ask them what would they like to choose and end the chat once the user confirms the booking. whenever you mention a service or service type or provider mention in single quotes ' '"       },
         ...conversationState.messages.map(msg => ({
             role: msg.role,
             content: msg.content
@@ -293,11 +293,17 @@ const processUserMessage = async (message, userId) => {
     {
         serviceType = detectServiceType(responseMessage);
         conversationState.serviceType = serviceType;
-        
+        const test = serviceType
         console.log("service Type passed:", serviceType);
+        if (test!=null)
+        {
+            console.log("enetered sPs:");
+
         providersList = await getServiceProviders(serviceType);
+        console.log("providers",providersList);
         const listPattern = /(\d+\.\s*[^1-9\n]+(?:\n|$))+/g;
         responseMessage = responseMessage.replace(listPattern, providersList);
+        }
 
     }
     if(dateTime==null)
@@ -355,8 +361,11 @@ const processUserMessage = async (message, userId) => {
     console.log("Service:", service);
     console.log("Service Type: ", serviceType);
     console.log("Date and Time:", dateTime);
-    
-    let serviceProviderDoc = await serviceProviderInfo.findOne({ fullname: serviceProvider });
+    let userDoc = await userName.findOne({ fullname: serviceProvider });
+if (!userDoc) {
+    console.error("No user found with fullname:", serviceProvider);
+}
+    let serviceProviderDoc = await serviceProviderInfo.findOne({ serviceProvider: userDoc._id });
         let serviceDoc = await ServiceInfo.findOne({ serviceName: service });
         let serviceTypeDoc = await ServiceType.findOne({ serviceType: serviceType });
        // console.log("ids",serviceProviderDoc._id,serviceDoc._id,serviceTypeDoc._id)
@@ -367,7 +376,7 @@ console.log("Service Type Document:", serviceTypeDoc);
         if (serviceProviderDoc && serviceDoc && serviceTypeDoc) {
             const newBooking = new Booking({
                 user: userId,
-                serviceProvider: serviceProviderDoc._id,
+                serviceProvider: userDoc._id,
                 service: serviceDoc._id,
                 serviceType: serviceTypeDoc._id,
                 bookingDate: new Date(dateTime.toLocaleString()), // Ensure dateTime is converted to Date object
