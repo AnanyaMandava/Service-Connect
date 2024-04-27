@@ -32,6 +32,20 @@ const findOrCreateConversationState = async (userId) => {
     return conversationState;
 };
 
+const deleteConversationByUserId = async (userId) => {
+    try {
+        const result = await ConversationState.deleteOne({ userId });
+        if (result.deletedCount === 0) {
+            console.log('No document found with that userId.');
+        } else {
+            console.log('Document deleted successfully.');
+        }
+    } catch (error) {
+        console.error('Error deleting document:', error);
+    }
+};
+
+
 
 // Function to update the conversation state
 const updateConversationState = async (userId, updates) => {
@@ -400,6 +414,8 @@ console.log("Service Type Document:", serviceTypeDoc);
     serviceType = null;
     dateTime = null;
     serviceProvider=null;
+    deleteConversationByUserId(userId);
+
             }
                 return responseMessage;
 };
