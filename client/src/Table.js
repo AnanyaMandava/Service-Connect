@@ -97,6 +97,7 @@ export default function BasicTable(props) {
               <TableCell align="left">Service Provider&nbsp;</TableCell>
               <TableCell align="left">Booking Date&nbsp;</TableCell>
               <TableCell align="left">Payment Status&nbsp;</TableCell>
+              <TableCell align="left">Status&nbsp;</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -1,25 +1,73 @@
-.row {
-  border: 1px solid gray;
+/* General Styles */
+.search-container {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  align-items: flex-end; /* Align the bottom of the inputs and button */
+  background-color: #F3F3F5; /* Slight grey background */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+.search-button {
+  background-color: #0096FF;
+  color: white;
+  padding: 10px 20px;
+  text-transform: none; /* Avoid uppercase transformation */
+  font-weight: bold;
+}
+
+.search-button:hover {
+  background-color: #007acc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-filters {
+    justify-content: center;
+  }
+}
+.search-container {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  align-items: flex-end; /* Align the bottom of the inputs and button */
+  background-color: #F3F3F5; /* Slight grey background */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  flex-grow: 1;
+}
+/* Styles for search result items */
+.result-item {
+  background: #fff;
+  padding: 15px;
+  margin: 10px 0;
   border-radius: 5px;
-  width: 340px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.SearchButton {
-  margin-left: "20px";
-  border-radius: "7px";
-  color: "white";
-  width: "100px";
-  padding: "5px";
-  display: "inline-block";
-  background-color: "#0096FF";
-  /* alignItems: "center", */
+.result-item button {
+  align-self: center; /* Align the button in the center of the flex container */
+  margin-top: 10px; /* Add some space above the button */
 }
 
-.datepickerclass {
-  width: 10px;
-  color: black;
-}
-
-.dateclass {
-  color: black;
-}
+/* ...rest of your CSS */

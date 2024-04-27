@@ -1,20 +1,60 @@
 .roDrone {
   display: flex;
   flex-direction: row;
-  /* background-color: grey; */
+  justify-content: center; /* Center the children */
+  gap: 20px; /* Add gap between calendar and details */
 }
 
 .dronedetails {
-  margin-top: "100px";
-  /* row-gap: 100px; */
-  /* margin-top: 100px; */
-  /* padding-left: 500px; */
-  margin-left: 600px;
-  padding: 100px;
-  border: 1px solid grey;
+  padding: 20px;
+  border: 1px solid #CCCCCC;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #FFFFFF;
 }
 
 .daterangecal {
-  margin-left: 140px;
-  /* margin-top: 12px; */
+  /* Remove margins that might disrupt the flex layout */
+  padding: 20px;
+  border: 1px solid #CCCCCC;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #FFFFFF;
+}
+
+
+.dronedetails {
+  margin-top: 50px; /* Adjusted for better alignment */
+  margin-left: auto; /* Centered */
+  margin-right: auto; /* Centered */
+  padding: 30px; /* Uniform padding */
+  border: 1px solid #CCCCCC; /* Softer border color */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  max-width: 800px; /* Maximum width */
+  background: #FFFFFF; /* White background */
+}
+
+/* Typography for the details */
+.typographyDetails {
+  margin-bottom: 10px;
+  color: #333333; /* Dark gray for better readability */
+  line-height: 1.6; /* More readable line height */
+}
+
+/* Typography for the header inside the details */
+.typographyHeader {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #000000; /* Black for emphasis */
+  border-bottom: 1px solid #DDDDDD; /* Subtle separator */
+  padding-bottom: 10px; /* Spacing below the header */
+}
+
+/* Improved styling for date and time pickers */
+.datepickerInput {
+  border-radius: 5px;
+  border: 1px solid #CCCCCC;
+  padding: 10px;
+  margin-right: 10px; /* Add spacing between inputs */
 }

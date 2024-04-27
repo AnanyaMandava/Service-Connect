@@ -49,8 +49,8 @@ const SelectedDroneDetails = (props) => {
   };
 
   return (
-    <div className="roDrone">
-      <Box className="daterangecal">
+    <Box className="roDrone" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', marginTop: 4 }}>
+      <Box className="daterangecal" sx={{ flexBasis: '50%', padding: 2 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box sx={{ mb: 2 }}>
             <StaticDatePicker
@@ -77,19 +77,45 @@ const SelectedDroneDetails = (props) => {
           </Box>
         </LocalizationProvider>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', ml: 4 }}>
-        <Typography variant="h6">Service Details:</Typography>
-        <Typography>{`Location: ${props.provider.serviceProvider.address}`}</Typography>
-        <Typography>{`Service: ${props.provider.service.serviceName} - ${props.provider.serviceType.serviceType}`}</Typography>
-        <Typography>{`Provider: ${props.provider.serviceProvider.fullname}`}</Typography>
-        <Typography>{`Date: ${selectedDate.toLocaleDateString()}`}</Typography>
-        <Typography>{`Time: ${startTime.toLocaleTimeString()} to ${endTime.toLocaleTimeString()}`}</Typography>
-        <Typography>{`Duration: ${props.provider.serviceType.duration} hours`}</Typography>
+      {/* <Box sx={{ display: 'flex', flexDirection: 'column', ml: 4 }}> */}
+      <Box className="dronedetails" sx={{ flexBasis: '50%', padding: 2, marginLeft: 2 }}>
+      <Typography variant="h6" sx={{ marginBottom: 2 }}>Service Details:</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+    <Typography sx={{ fontWeight: 'bold' }}>Location:</Typography>
+    <Typography sx={{ width: '85%', textAlign: 'left' }}>{props.provider.serviceProvider.address}</Typography>
+  </Box>
+  
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+    <Typography sx={{ fontWeight: 'bold' }}>Service:</Typography>
+    <Typography sx={{ width: '85%', textAlign: 'left' }}>{`${props.provider.service.serviceName} - ${props.provider.serviceType.serviceType}`}</Typography>
+  </Box>
+  
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+    <Typography sx={{ fontWeight: 'bold' }}>Provider:</Typography>
+    <Typography sx={{ width: '85%', textAlign: 'left' }}>{props.provider.serviceProvider.fullname}</Typography>
+  </Box>
+  
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+    <Typography sx={{ fontWeight: 'bold' }}>Date:</Typography>
+    <Typography sx={{ width: '85%', textAlign: 'left' }}>{selectedDate.toLocaleDateString()}</Typography>
+  </Box>
+  
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+    <Typography sx={{ fontWeight: 'bold' }}>Time:</Typography>
+    <Typography sx={{ width: '85%', textAlign: 'left' }}>{`${startTime.toLocaleTimeString()} to ${endTime.toLocaleTimeString()}`}</Typography>
+  </Box>
+  
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 1 }}>
+    <Typography sx={{ fontWeight: 'bold' }}>Duration:</Typography>
+    <Typography sx={{ width: '85%', textAlign: 'left' }}>{`${props.provider.serviceType.duration} hours`}</Typography>
+  </Box>
+
+        </Box>
         {/* <Button variant="outlined" startIcon={<img src={img1} alt="Add" />}>
           Add a Flight Time
         </Button> */}
-      </Box>
-    </div>
+      {/* </Box> */}
+    </Box>
   );
 };
 

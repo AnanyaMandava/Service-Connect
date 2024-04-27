@@ -1,0 +1,132 @@
+/* Reset margins and paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Basic styling */
+  body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  /* Service container styles */
+  .service-container {
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  /* Service details */
+  .service-details {
+    display: block; /* Changed from flex to block */
+    background-color: #f9f9f9; /* Light grey background */
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .details-text {
+    margin-bottom: 10px; /* Adds space between each detail */
+    line-height: 1.4; /* Spacing between lines for readability */
+  }
+  
+/* Price and date/time information styling */
+.details-price-time {
+    background-color: #fff; /* White background */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 20px; /* Space from the service details box */
+  }  
+
+  .service-details .details-left {
+    flex-basis: 70%;
+  }
+  
+  .service-details .details-right {
+    flex-basis: 30%;
+    text-align: right;
+  }
+  
+  /* Price and selection area */
+  .price-selection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .price-selection .price {
+    font-size: 1.5rem;
+    color: #0096FF;
+    font-weight: bold;
+  }
+  
+  .price-selection .select-button {
+    background-color: #0096FF;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .price-selection .select-button:hover {
+    background-color: #007acc;
+  }
+  
+  /* Date and time styles */
+  .datetime-info {
+    margin-left: 5%;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .datetime-info b {
+    color: #333;
+    font-weight: 500;
+  }
+  
+  /* Location and service info table */
+  .loc-s3 {
+    margin-top: 1rem;
+  }
+  
+  .loc-s3 table {
+    width: 100%;
+  }
+  
+  .loc-s3 td {
+    padding: 8px;
+  }
+  
+  .loc-s3 .loc-title {
+    font-weight: bold;
+  }
+  
+  /* Add a global margin */
+  .container {
+    margin: 20px;
+  }
+  
+  /* Button states */
+  button:focus,
+  button:active,
+  input[type="text"]:focus,
+  input[type="text"]:active {
+    outline: none;
+    border: 1px solid #0096FF;
+  }
+  
+  /* Add more styling as needed */
+  

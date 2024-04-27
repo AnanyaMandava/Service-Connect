@@ -73,8 +73,8 @@ function DroneCatelog(props) {
   };
 
   return (
-    <Box>
-      <Box sx={{ display: "flex", gap: 2, border: "1.5px solid black", padding: "15px", color: "blue", backgroundColor: "#F3F3F5", borderRadius: 4 }}>
+     <Box className="search-container">
+      <Box className="search-filters" sx={{ display: "flex", gap: 2, border: "1.5px solid black", padding: "15px", color: "blue", backgroundColor: "#F3F3F5", borderRadius: 4 }}>
         <Autocomplete
           disablePortal
           options={serviceTypes}
