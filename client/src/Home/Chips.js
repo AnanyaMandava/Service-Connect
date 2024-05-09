@@ -16,7 +16,7 @@ export default function Chips() {
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
-        axios.get(`http://localhost:3001/all/getnextbooking/${userId}`)
+        axios.get(`${process.env.REACT_APP_F_URL}all/getnextbooking/${userId}`)
             .then(response => {
                 if (response.data) {
                   console.log("Response: ", response.data);

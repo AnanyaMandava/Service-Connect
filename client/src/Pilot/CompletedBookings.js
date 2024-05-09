@@ -13,7 +13,7 @@ function CompBookings() {
 
   useEffect(() => {
     const serviceProviderId = localStorage.getItem('userId');
-    const url = `http://localhost:3001/all/getCompletedBookings/${serviceProviderId}`;
+    const url = `${process.env.REACT_APP_F_URL}all/getCompletedBookings/${serviceProviderId}`;
     axios.get(url).then(res => {
       setBookingData(res.data);
       setShowSpinner(false);

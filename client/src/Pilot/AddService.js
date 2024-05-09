@@ -29,7 +29,7 @@ const AddServiceComponent = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/all/services');
+      const response = await axios.get('${process.env.REACT_APP_F_URL}all/services');
       setServices(response.data);
     } catch (error) {
       console.error('Error fetching services:', error);
@@ -38,7 +38,7 @@ const AddServiceComponent = () => {
 
   const fetchServiceTypes = async (serviceId) => {
     try {
-      const response = await axios.get(`http://localhost:3001/all/getservicetypes/${serviceId}`);
+      const response = await axios.get(`${process.env.REACT_APP_F_URL}all/getservicetypes/${serviceId}`);
       setServiceTypes(response.data);
     } catch (error) {
       console.error('Error fetching service types:', error);
@@ -56,7 +56,7 @@ const AddServiceComponent = () => {
       description,
     };
     try {
-      await axios.post('http://localhost:3001/all/addserviceprovider', newServiceCatalogEntry);
+      await axios.post('${process.env.REACT_APP_F_URL}all/addserviceprovider', newServiceCatalogEntry);
       fetchServiceCatalog();
     } catch (error) {
       console.error('Error adding service catalog entry:', error);
@@ -66,7 +66,7 @@ const AddServiceComponent = () => {
   const fetchServiceCatalog = async () => {
     const serviceProviderId = localStorage.getItem('userId');
     try {
-      const response = await axios.get(`http://localhost:3001/all/getserviceproviders/${serviceProviderId}`);
+      const response = await axios.get(`${process.env.REACT_APP_F_URL}all/getserviceproviders/${serviceProviderId}`);
       setServiceCatalog(response.data);
     } catch (error) {
       console.error('Error fetching service catalog:', error);
@@ -75,7 +75,7 @@ const AddServiceComponent = () => {
 
   const handleEditServiceCatalogEntry = async (editedEntry) => {
     try {
-      const response = await axios.put(`http://localhost:3001/all/updateserviceprovider/${editedEntry._id}`, editedEntry);
+      const response = await axios.put(`${process.env.REACT_APP_F_URL}all/updateserviceprovider/${editedEntry._id}`, editedEntry);
       if (response.status === 200) {
         fetchServiceCatalog();
         setEditEntry(null);
@@ -87,7 +87,7 @@ const AddServiceComponent = () => {
 
   const handleDeleteServiceCatalogEntry = async (entryId) => {
     try {
-      const response = await axios.delete(`http://localhost:3001/all/deleteserviceprovider/${entryId}`);
+      const response = await axios.delete(`${process.env.REACT_APP_F_URL}all/deleteserviceprovider/${entryId}`);
       if (response.status === 200) {
         fetchServiceCatalog();
       }

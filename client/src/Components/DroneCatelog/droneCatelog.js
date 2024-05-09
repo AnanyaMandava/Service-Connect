@@ -23,7 +23,7 @@ function DroneCatelog(props) {
   const { title } = props.selectedService;
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/all/getservicetype/${title}`).then((res) => {
+    axios.get(`${process.env.REACT_APP_F_URL}all/getservicetype/${title}`).then((res) => {
       setServiceTypes(res.data);
     });
   }, [title]);
@@ -35,7 +35,7 @@ function DroneCatelog(props) {
       console.log("Price Limit:", priceLimit);
   
       // Fetch the serviceTypeId based on the selected service type name
-      axios.get(`http://localhost:3001/all/getservicetypeid`, {
+      axios.get(`${process.env.REACT_APP_F_URL}all/getservicetypeid`, {
         params: {
           serviceTypeName: selectedServiceType // If serviceTypes contains objects, use selectedServiceType.serviceType
         }
@@ -44,7 +44,7 @@ function DroneCatelog(props) {
         console.log("Service Type Id:", serviceTypeId);
   
         // Now fetch service providers based on the serviceTypeId and price range
-        axios.get(`http://localhost:3001/all/getspsearchrecords`, {
+        axios.get(`${process.env.REACT_APP_F_URL}all/getspsearchrecords`, {
           params: {
             serviceTypeId: serviceTypeId,
             maxPrice: priceLimit

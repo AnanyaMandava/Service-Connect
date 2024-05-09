@@ -60,7 +60,7 @@ function Login(props) {
     console.log("save to db for signup");
     console.log(data);
     console.log(dataR);
-      axios.post("http://localhost:3001/all/signup", {
+      axios.post("${process.env.REACT_APP_F_URL}all/signup", {
         email: data.email,
         mobile: data.mobile,
         fullname: data.fullname,
@@ -117,7 +117,7 @@ function Login(props) {
     } else {
       if (currentUserRole === "SP") {
        
-      axios.post('http://localhost:3001/all/login',{
+      axios.post('${process.env.REACT_APP_F_URL}all/login',{
           email:email,
           password:password,
           role: currentUserRole,
@@ -141,7 +141,7 @@ function Login(props) {
       //     }
       
       else if (currentUserRole === "Customer") {
-        axios.post('http://localhost:3001/all/login',{
+        axios.post('${process.env.REACT_APP_F_URL}all/login',{
           email:email,
           password:password,
           role: currentUserRole,

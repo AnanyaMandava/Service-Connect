@@ -24,7 +24,7 @@ export default function Schedule() {
       try {
         const serviceProviderId = localStorage.getItem('userId'); 
         console.log('spId:', serviceProviderId);       
-        const response = await axios.get(`http://localhost:3001/all/getcustbookings/${serviceProviderId}`);
+        const response = await axios.get(`${process.env.REACT_APP_F_URL}all/getcustbookings/${serviceProviderId}`);
         
         // Log the response to check if it's as expected
         console.log('Fetched Bookings:', response.data);

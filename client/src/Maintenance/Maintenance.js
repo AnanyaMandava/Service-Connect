@@ -15,7 +15,7 @@ const Maintenance = () => {
         setUserInput("");
         try {
             // const response = await axios.post(process.env.REACT_APP_BACKEND_URI+'/chat', { message: userInput, email : localStorage.getItem('loggedEmail')});
-            const response = await axios.post('http://localhost:3001/all/chat', { message: userInput, email : localStorage.getItem('loggedEmail'), userId : localStorage.getItem('userId') });
+            const response = await axios.post('${process.env.REACT_APP_F_URL}all/chat', { message: userInput, email : localStorage.getItem('loggedEmail'), userId : localStorage.getItem('userId') });
             const botMessage = { sender: 'chatbot', text: response.data.message };
             setMessages(messages => [...messages, botMessage]);
         } catch (error) {

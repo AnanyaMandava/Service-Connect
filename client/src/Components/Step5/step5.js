@@ -36,7 +36,7 @@ const Step5 = (props) => {
     };
 
     axios
-      .post("http://localhost:3001/all/bookService", bookingPayload)
+      .post("${process.env.REACT_APP_F_URL}all/bookService", bookingPayload)
       .then((res) => {
         setBookingData(res.data);
         console.log("Booking Data:", res.data);

@@ -22,7 +22,7 @@ export default function ChartComponent() {
   React.useEffect(() => {
     const serviceProviderId = localStorage.getItem('userId');
     console.log("userId:", serviceProviderId);
-    axios.get(`http://localhost:3001/all/getallspbookings/${serviceProviderId}`).then((res) => {
+    axios.get(`${process.env.REACT_APP_F_URL}all/getallspbookings/${serviceProviderId}`).then((res) => {
       let active = 0;
       let upcoming = 0;
       let completed = 0;

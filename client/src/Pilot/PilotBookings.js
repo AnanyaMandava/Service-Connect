@@ -13,7 +13,7 @@ function SPBookings() {
 
   useEffect(() => {
     const serviceProviderId = localStorage.getItem('userId');
-    const url = `http://localhost:3001/all/getActiveSPBookings/${serviceProviderId}`;
+    const url = `${process.env.REACT_APP_F_URL}all/getActiveSPBookings/${serviceProviderId}`;
     axios.get(url).then(res => {
       setBookingData(res.data);
       setShowSpinner(false);
@@ -24,7 +24,7 @@ function SPBookings() {
   }, []);
 
   const handleStatusChange = (id, newStatus) => {
-    axios.patch(`http://localhost:3001/all/updateBookingStatus/${id}`, { status: newStatus })
+    axios.patch(`${process.env.REACT_APP_F_URL}all/updateBookingStatus/${id}`, { status: newStatus })
       .then(() => {
         const updatedData = bookingData.map(item => item._id === id ? { ...item, status: newStatus } : item);
         setBookingData(updatedData);

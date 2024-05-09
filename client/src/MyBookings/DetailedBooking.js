@@ -35,7 +35,7 @@ function DetailedBooking(props) {
   const [bookingDetails,setbookingDetails]=useState();
   useEffect(()=>{
     const userId = localStorage.getItem('userId');
-    axios.get(`http://localhost:3001/all/getallcustbookings`).then((res)=>{
+    axios.get(`${process.env.REACT_APP_F_URL}all/getallcustbookings`).then((res)=>{
       setbookingDetails(res.data)
     })
   },[])

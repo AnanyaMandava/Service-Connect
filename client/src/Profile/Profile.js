@@ -25,7 +25,7 @@ function Profile() {
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     if (userId) {
-      axios.get(`http://localhost:3001/all/userdetails/${userId}`)
+      axios.get(`${process.env.REACT_APP_F_URL}all/userdetails/${userId}`)
         .then((res) => {
           setUserData(res.data.user);
           setUpdatedUserData(res.data.user); // Initialize updatedUserData with the current user data
@@ -48,7 +48,7 @@ function Profile() {
         zipcode: updatedUserData.zipcode
       };
 
-      axios.put(`http://localhost:3001/all/updateuser/${userData._id}`, payload)
+      axios.put(`${process.env.REACT_APP_F_URL}all/updateuser/${userData._id}`, payload)
         .then((res) => {
           setUserData(updatedUserData);
           setSnackbarSeverity("success");

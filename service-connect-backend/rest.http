@@ -1,7 +1,7 @@
 get http://localhost:3000
 
 ###
-post http://localhost:3001/api/auth/spSignIn
+post ${process.env.REACT_APP_F_URL}api/auth/spSignIn
 Content-Type: application/json
 
 {
